@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "netbox-more-metrics"
+version = "0.1.0"
+description = "Provide customized metrics on data stored in NetBox."
+authors = ["Daan van Gorkum <djvg@djvg.net>"]
+readme = "README.md"
+packages = [{include = "netbox_more_metrics"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.0.3"
+prometheus-client = "^0.16.0"
+black = "^23.1.0"
+identify = "^2.5.17"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"

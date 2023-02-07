@@ -1,0 +1,93 @@
+{% extends "generic/object.html" %}
+
+{% block extra_controls %}
+<a href="{% url 'plugins:netbox_more_metrics:metric_metrics' pk=object.pk %}" class="btn btn-sm btn-info" role="button">
+    <i class="mdi mdi-export" aria-hidden="true"></i>&nbsp;Export Metrics
+</a>
+{% endblock extra_controls %}
+
+{% block content %}
+<div class="row">
+    <div class="col col-md-6">
+        <div class="card">
+            <h5 class="card-header">
+                Metric
+            </h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Name</th>
+                        <td>{{ object.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Description</th>
+                        <td>{{ object.metric_description }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Enabled</th>
+                        <td>{% checkmark object.enabled %}</td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+        {% include "inc/panel_table.html" with table=collections_table heading="Exported in collections" %}
+        {% include "inc/panels/tags.html" %}
+        {% include "inc/panels/custom_fields.html" %}
+    </div>
+    <div class="col col-md-6">
+        <div class="card">
+            <h5 class="card-header">
+                Metric Configuration
+            </h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Name</th>
+                        <td>{{ object.metric_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Labels</th>
+                        <td>{{ object.metric_labels | join:", " }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Type</th>
+                        <td>{{ object.get_metric_type_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Object Type</th>
+                        <td>{{ object.content_type }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h5 class="card-header">
+                Filter
+            </h5>
+            <div class="card-body">
+                {% if object.filter %}
+                <pre>{{ object.filter | json }}</pre>
+                {% else %}
+                <span class="text-muted">None</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col col-md-12">
+        <div class="card">
+            <h5 class="card-header">
+                Generated Metrics
+            </h5>
+            <div class="card-body">
+                <pre>{{ metrics }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

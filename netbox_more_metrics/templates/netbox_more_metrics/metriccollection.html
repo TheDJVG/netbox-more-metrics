@@ -1,0 +1,44 @@
+{% extends "generic/object.html" %}
+
+{% block extra_controls %}
+<a href="{% url 'plugins:netbox_more_metrics:metriccollection_metrics' pk=object.pk %}" class="btn btn-sm btn-info" role="button">
+    <i class="mdi mdi-export" aria-hidden="true"></i>&nbsp;Export Metrics
+</a>
+{% endblock extra_controls %}
+
+{% block content %}
+<div class="row">
+    <div class="col col-md-4">
+        <div class="card">
+            <h5 class="card-header">
+                Metric Collection
+            </h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Name</th>
+                        <td>{{ object.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Description</th>
+                        <td>{{ object.description | placeholder }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Enabled</th>
+                        <td>{% checkmark object.enabled %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Exported globally</th>
+                        <td>{% checkmark object.include_in_default %}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {% include "inc/panels/tags.html" %}
+        {% include "inc/panels/custom_fields.html" %}
+    </div>
+    <div class="col col-md-8">
+        {% include "inc/panel_table.html" with table=metrics_table heading="Metrics" %}
+    </div>
+</div>
+{% endblock content %}
