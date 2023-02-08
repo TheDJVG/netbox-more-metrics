@@ -4,7 +4,6 @@ name: ci
   push:
     branches:
       - development
-      - latest
 permissions:
   contents: write
 jobs:
