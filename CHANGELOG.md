@@ -1,5 +1,5 @@
 # Changelog
 
-## 0.1.0 (2023-XX-XX)
+## 0.1.0 (2023-02-08)
 
-* First release with basic functionality working.
+* First release with main functionality working.
