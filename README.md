@@ -1,10 +1,42 @@
-__*Early development, not ready for production usage.*__
 # netbox-more-metrics
 
 Create custom metrics and export information from NetBox into your timeseries database.
 
-# Background
-### Why?
+## Compatibility
+
+| NetBox Version | Plugin Version |
+|----------------|----------------|
+|     3.4        |      0.1.0     |
+
+## Installing
+
+For adding to a NetBox Docker setup see
+[the general instructions for using netbox-docker with plugins](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins).
+
+While this is still in development and not yet on pypi you can install with pip:
+
+```bash
+pip install git+https://github.com/TheDJVG/netbox-more-metrics
+```
+
+or by adding to your `local_requirements.txt` or `plugin_requirements.txt` (netbox-docker):
+
+```bash
+git+https://github.com/TheDJVG/netbox-more-metrics
+```
+
+Enable the plugin in `/opt/netbox/netbox/netbox/configuration.py`,
+ or if you use netbox-docker, your `/configuration/plugins.py` file :
+
+```python
+PLUGINS = [
+    'netbox_more_metrics'
+]
+```
+
+
+## Features
+### Custom metrics
 For example, you could track the amount of active devices over time by rack and site
 ![Example metric](docs/img/example1.png)
 
