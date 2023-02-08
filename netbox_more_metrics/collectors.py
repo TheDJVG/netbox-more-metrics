@@ -18,11 +18,6 @@ from netbox_more_metrics.models import Metric, MetricCollection
 
 logger = logging.getLogger(__name__)
 
-"""
-This is a very early implementation.
-- Currently changes to MetricCollections are not tracked!
-"""
-
 
 class DynamicMetricCollectionCollector(Collector):
     def __init__(
@@ -33,43 +28,47 @@ class DynamicMetricCollectionCollector(Collector):
         self._is_default_registry = registry is REGISTRY
         self.registry = registry
 
+        self.base_queryset = (
+            collection.metrics.all() if collection else Metric.objects.all()
+        )
+
+        filter = dict(enabled=True, collections__enabled=True)
+
+        if self._is_default_registry:
+            filter.update(dict(collections__include_in_default=True))
+
+        self.queryset = self.base_queryset.filter(**filter)
+
         if self._is_default_registry:
             logger.debug("Collector %r for default registry.", self)
 
-        # Metrics to be exporting
-        if not collection:
-            self.collections = MetricCollection.objects.filter(
-                enabled=True, metrics__enabled=True
-            )
-            if self._is_default_registry:
-                self.collections = self.collections.filter(include_in_default=True)
-        else:
-            self.collections = [collection]
-
+        # Start the collectors.
         self._refresh_collectors()
 
         # We only register ourselves so that we can check for metrics that need to be added.
         # The actual metrics are emitted from their own instance and unregister themselves if needed.
         self.registry.register(self)
 
+    def _get_enabled_metrics(self):
+        metrics = self.queryset.all().distinct()
+        return metrics
+
     def _refresh_collectors(self):
-        for collection in self.collections:
-            for metric in collection.metrics.filter(enabled=True).all():
-                if metric.metric_name not in self.registry._names_to_collectors:
-                    logger.debug(
-                        "Adding dynamic metric collector for Metric '%s' (%d).",
-                        metric.metric_name,
-                        metric.pk,
-                    )
-                    DynamicMetricCollector(metric=metric, registry=self.registry)
+        for metric in self._get_enabled_metrics():
+            if metric.metric_name not in self.registry._names_to_collectors:
+                logger.debug(
+                    "Adding dynamic metric collector for Metric '%s' (%d).",
+                    metric.metric_name,
+                    metric.pk,
+                )
+                DynamicMetricCollector(metric=metric, registry=self.registry)
 
     def collect(self) -> Iterable[metrics_core.Metric]:
         logger.debug("Refreshing dynamic metric collectors...")
         self._refresh_collectors()
-
         return
 
-        # We have to yield some metric otherwise this will fail
+        # We have to yield some metric otherwise this will fail in the registry .collect() method.
         yield InfoMetricFamily()
 
 
@@ -166,6 +165,17 @@ class DynamicMetricCollector(Collector):
             .values("count", *self.labels)
         )
 
+    def is_metric_enabled(self):
+        if not self._metric.enabled:
+            return False
+
+        if self._is_default_registry:
+            return bool(
+                self._metric.collections.filter(enabled=True, include_in_default=True)
+            )
+
+        return bool(self._metric.collections.filter(enabled=True))
+
     def collect(self) -> Iterable[metrics_core.Metric]:
         logger.debug("Collecting for Metric '%s' (%d).", self.name, self.pk)
 
@@ -179,12 +189,13 @@ class DynamicMetricCollector(Collector):
                 return
 
         # Check if the metric has changed, and if that's the case renew the metric.
+        # Yield the metrics from the new instance.
         if self.created < self._metric.last_updated.timestamp():
-            self.renew()
+            yield from self.renew().collect()
             return
 
         # Metric has been disabled, unregister.
-        if not self._metric.enabled and not self.force_enable:
+        if not self.force_enable and not self.is_metric_enabled():
             if self._is_default_registry:
                 self.unregister()
             return
