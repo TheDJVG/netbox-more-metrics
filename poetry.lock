@@ -221,7 +221,7 @@ virtualenv = ">=20.10.0"
 name = "prometheus-client"
 version = "0.16.0"
 description = "Python client for the Prometheus monitoring system."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -335,4 +335,4 @@ testing = ["coverage (>=6.2)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "17245ab365c87859781c5b3c69d7dba49e85a313004402b2d546876391d03007"
+content-hash = "9549bf5e5130e1d8631cc196172d70304bd1c957b3186e4fc4bbb26e47a6df70"
