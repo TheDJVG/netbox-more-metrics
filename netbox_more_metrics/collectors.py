@@ -102,8 +102,8 @@ class DynamicMetricCollector(Collector):
             self._metric.pk,
         )
 
-        # If the query is not valid we should not start this collector.
-        if self.filter and not self.test_filter():
+        # If the filter/labels are not valid we should not start this collector.
+        if (self.filter and not self.test_filter()) or not self.test_labels():
             return
 
         registry.register(self)
@@ -120,6 +120,16 @@ class DynamicMetricCollector(Collector):
             logger.exception(
                 "Metric '%s' (%d) filter is not valid.", self.name, self.pk
             )
+            return False
+
+        return True
+
+    def test_labels(self):
+        # Test the labels make sure they're valid.
+        try:
+            self.queryset.values(*self.labels)
+        except FieldError:
+            logger.exception("Metric '%s' (%d) labels are invalid.", self.name, self.pk)
             return False
 
         return True
