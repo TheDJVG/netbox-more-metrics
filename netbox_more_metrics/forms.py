@@ -6,6 +6,7 @@ from utilities.forms.fields import (
     DynamicModelMultipleChoiceField,
 )
 
+from netbox_more_metrics.fields import DynamicMetricValueOptionField
 from netbox_more_metrics.models import Metric, MetricCollection
 
 
@@ -26,10 +27,19 @@ class MetricForm(NetBoxModelForm):
     )
     metric_description = forms.CharField(label="Description")
 
+    metric_value = DynamicMetricValueOptionField(
+        query_params={"object_type": "$content_type"},
+        object_type_field="content_type",
+        help_text="Select the value used for the metric. This might add labels.",
+    )
+
     fieldsets = (
         ("", ("name", "metric_description", "enabled", "tags")),
-        ("Metric configuration", ("metric_name", "metric_labels", "metric_type")),
         ("Metric source", ("content_type", "filter")),
+        (
+            "Metric configuration",
+            ("metric_name", "metric_labels", "metric_type", "metric_value"),
+        ),
         ("Metric exposition", ("collections",)),
     )
 
@@ -42,6 +52,7 @@ class MetricForm(NetBoxModelForm):
             "metric_name",
             "metric_labels",
             "metric_type",
+            "metric_value",
             "filter",
             "content_type",
             "collections",

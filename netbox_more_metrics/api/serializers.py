@@ -28,3 +28,10 @@ class MetricSerializer(NetBoxModelSerializer):
     class Meta:
         model = Metric
         fields = ("id", "name")
+
+
+class MetricValueOptionSerializer(serializers.Serializer):
+    id = (
+        serializers.CharField()
+    )  # We 'abuse' the id field here so that the normal APISelect widget/js works.
+    display = serializers.CharField()

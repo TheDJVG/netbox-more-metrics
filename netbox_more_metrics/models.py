@@ -48,6 +48,7 @@ class Metric(NetBoxModel, ObjectAbsoluteUrlMixin):
         base_field=models.CharField(max_length=50, validators=[validate_label_name])
     )
     metric_type = models.CharField(max_length=50, choices=MetricTypeChoices)
+    metric_value = models.CharField(max_length=50, default="count")
     content_type = models.ForeignKey(
         to=ContentType,
         related_name="+",

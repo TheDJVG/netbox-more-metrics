@@ -13,6 +13,7 @@ from prometheus_client.core import (
 )
 from prometheus_client.registry import REGISTRY, Collector, CollectorRegistry
 
+from netbox_more_metrics import querysets
 from netbox_more_metrics.metrics import dynamic_metric_collectors
 from netbox_more_metrics.models import Metric, MetricCollection
 
@@ -89,7 +90,26 @@ class DynamicMetricCollector(Collector):
         self.description = metric.metric_description
         self.metric_family = self._metric.metric_family
         self.model = self._metric.content_type.model_class()
-        self.queryset = self.model.objects.all()
+
+        # Get custom method
+        self.queryset_method = None
+        self.metric_value = None
+        self.extra_labels = []
+        if self._metric.metric_value and self._metric.metric_value != "count":
+            value = self._metric.metric_value.split(".")
+            if len(value) > 1:
+                self.queryset_method = value[0]
+                self.metric_value = value[1]
+                self.extra_labels.append(self.metric_value)
+            else:
+                self.metric_value = value[0]
+                self.extra_labels.append(self.metric_value)
+
+        # Check if we have a custom QuerySet available. Often used for different accessors.
+        extended_queryset = querysets.get_extended_queryset_for_model(model=self.model)
+        self.queryset = extended_queryset(model=self.model).all()
+        logger.debug("Using queryset: '%s'.", self.queryset.__class__)
+
         self.filter = self._metric.filter
         self.labels = self._metric.metric_labels
         self.created = time()
@@ -146,20 +166,26 @@ class DynamicMetricCollector(Collector):
         return self.__class__(registry=self._registry, metric=self._metric)
 
     def get_queryset(self):
+        qs = self.queryset
         if self.filter:
-            return self.queryset.filter(**self.filter)
+            qs = qs.filter(**self.filter)
 
-        return self.queryset
+        if self.queryset_method and hasattr(qs, self.queryset_method):
+            qs = getattr(qs, self.queryset_method)()
+
+        return qs
 
     def get_source_annotations(self):
-        return {f"source_{field}": F(field) for field in self.labels}
+        return {
+            f"source_{field}": F(field) for field in self.labels + self.extra_labels
+        }
 
     def get_destination_annotations(self):
         return {
             field: Coalesce(
                 Cast(f"source_{field}", output_field=CharField()), Value("null")
             )
-            for field in self.labels
+            for field in self.labels + self.extra_labels
         }
 
     def get_metric_result(self):
@@ -167,13 +193,15 @@ class DynamicMetricCollector(Collector):
         values = source_annotations.keys()
         final_annotations = self.get_destination_annotations()
 
-        return (
+        base_qs = (
             self.get_queryset()
             .annotate(**source_annotations)
             .values(*values)
             .annotate(count=Count("*"), **final_annotations)
-            .values("count", *self.labels)
+            .values("count", *self.labels, *self.extra_labels)
         )
+
+        return base_qs
 
     def is_metric_enabled(self):
         if not self._metric.enabled:
@@ -219,11 +247,15 @@ class DynamicMetricCollector(Collector):
         results = self.get_metric_result()
 
         for result in results:
-            count = result.pop("count")
+            # count is always there.
+            value = result.pop("count")
+            if self.metric_value:
+                value = float(result.pop(self.metric_value))
+
             if self.metric_family is InfoMetricFamily:
                 metric.add_metric(labels="", value=result)
             else:
-                metric.add_metric(result.values(), count)
+                metric.add_metric(result.values(), value)
 
         yield metric
 
