@@ -13,7 +13,23 @@ Create custom metrics and export information from NetBox into your timeseries da
 For adding to a NetBox Docker setup see
 [the general instructions for using netbox-docker with plugins](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins).
 
-While this is still in development and not yet on pypi you can install with pip:
+
+
+### Install
+
+```bash
+pip install netbox-more-metrics
+```
+
+or by adding to your `local_requirements.txt` or `plugin_requirements.txt` (netbox-docker):
+
+```bash
+netbox-more-metrics
+```
+
+### Development Install
+
+If you would like to install a version not yet published to pypi.
 
 ```bash
 pip install git+https://github.com/TheDJVG/netbox-more-metrics
@@ -24,6 +40,8 @@ or by adding to your `local_requirements.txt` or `plugin_requirements.txt` (netb
 ```bash
 git+https://github.com/TheDJVG/netbox-more-metrics
 ```
+
+### NetBox Configuration
 
 Enable the plugin in `/opt/netbox/netbox/netbox/configuration.py`,
  or if you use netbox-docker, your `/configuration/plugins.py` file :
