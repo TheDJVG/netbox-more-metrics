@@ -2,11 +2,11 @@ from netbox.api.viewsets import NetBoxModelViewSet
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from netbox_more_metrics import querysets
 from netbox_more_metrics.api.serializers import (
     MetricCollectionSerializer,
     MetricValueOptionSerializer,
 )
+from netbox_more_metrics.choices import MetricValueChoices
 from netbox_more_metrics.models import MetricCollection
 
 
@@ -20,12 +20,13 @@ class MetricValueTypeOptionsViewSet(viewsets.ViewSet):
 
     def list(self, request):
         content_type = request.query_params.get("object_type")
-        qs = querysets.DefaultExtendedQuerySet
+        choices = MetricValueChoices.DEFAULT_CHOICES
         if content_type:
-            qs = querysets.get_extended_queryset_for_model(content_type)
+            choices = MetricValueChoices.choices_for_contenttype(content_type)
 
+        print(choices)
         options = list()
-        for option in qs.CHOICES:
+        for option in choices:
             value, name = option
             options.append({"id": value, "display": name})
 
@@ -33,9 +34,9 @@ class MetricValueTypeOptionsViewSet(viewsets.ViewSet):
 
         return Response(
             {
-                "results": serializer.data,
                 "count": len(options),
                 "next": None,
                 "previous": None,
+                "results": serializer.data,
             }
         )

@@ -30,7 +30,7 @@ class MetricForm(NetBoxModelForm):
     metric_value = DynamicMetricValueOptionField(
         query_params={"object_type": "$content_type"},
         object_type_field="content_type",
-        help_text="Select the value used for the metric. This might add labels.",
+        help_text="Select the value used for the metric. This might ignore aggregation done by labels.",
     )
 
     fieldsets = (

@@ -2,7 +2,7 @@ from django import forms
 from django.shortcuts import reverse
 from utilities.forms.widgets import APISelect
 
-from netbox_more_metrics.querysets import get_extended_queryset_for_model
+from netbox_more_metrics.choices import MetricValueChoices
 
 
 class DynamicMetricValueOptionField(forms.ChoiceField):
@@ -13,8 +13,8 @@ class DynamicMetricValueOptionField(forms.ChoiceField):
         self.object_type_field = object_type_field
 
         # These are always valid and should be the default.
-        kwargs["choices"] = (("count", "Count"),)
-        kwargs["initial"] = "count"
+        kwargs["choices"] = MetricValueChoices.DEFAULT_CHOICES
+        kwargs["initial"] = MetricValueChoices.DEFAULT_CHOICE
 
         super().__init__(*args, **kwargs)
 
@@ -25,7 +25,7 @@ class DynamicMetricValueOptionField(forms.ChoiceField):
         if self.object_type_field:
             value = form.initial.get(self.object_type_field)
             if value:
-                self.choices = get_extended_queryset_for_model(value).CHOICES
+                self.choices = MetricValueChoices.choices_for_contenttype(value)
 
         widget = bound_field.field.widget
 
