@@ -69,9 +69,16 @@ class Metric(NetBoxModel, ObjectAbsoluteUrlMixin):
         # Sort the labels, so they're in the same order as the exported metrics.
         self.metric_labels.sort()
 
+        model = self.content_type.model_class()
+
+        # Test the labels
+        try:
+            model.objects.values(*self.metric_labels)
+        except FieldError as e:
+            raise ValidationError({"metric_labels": f"Labels invalid: {e}"})
+
         # Test the filter
         if self.filter:
-            model = self.content_type.model_class()
             try:
                 model.objects.filter(**self.filter)
             except FieldError as e:
