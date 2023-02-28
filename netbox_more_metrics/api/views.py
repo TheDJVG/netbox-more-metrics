@@ -24,7 +24,6 @@ class MetricValueTypeOptionsViewSet(viewsets.ViewSet):
         if content_type:
             choices = MetricValueChoices.choices_for_contenttype(content_type)
 
-        print(choices)
         options = list()
         for option in choices:
             value, name = option
