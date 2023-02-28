@@ -20,13 +20,6 @@ class DynamicMetricValueOptionField(forms.ChoiceField):
 
     def get_bound_field(self, form, field_name):
         bound_field = forms.BoundField(form, self, field_name)
-
-        # Get the choices from the parent object type field.
-        if self.object_type_field:
-            value = form.initial.get(self.object_type_field)
-            if value:
-                self.choices = MetricValueChoices.choices_for_contenttype(value)
-
         widget = bound_field.field.widget
 
         # Attach any query parameters

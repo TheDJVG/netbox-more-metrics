@@ -6,6 +6,7 @@ from utilities.forms.fields import (
     DynamicModelMultipleChoiceField,
 )
 
+from netbox_more_metrics.choices import MetricValueChoices
 from netbox_more_metrics.fields import DynamicMetricValueOptionField
 from netbox_more_metrics.models import Metric, MetricCollection
 
@@ -57,3 +58,14 @@ class MetricForm(NetBoxModelForm):
             "content_type",
             "collections",
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Set the choices for the content_type field.
+        if self.data:
+            content_type = self.data.get("content_type")
+            if content_type:
+                self.fields[
+                    "metric_value"
+                ].choices = MetricValueChoices.choices_for_contenttype(content_type)
