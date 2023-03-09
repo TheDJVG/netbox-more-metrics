@@ -11,7 +11,7 @@ class NetBoxMoreMetricsConfig(PluginConfig):
     name = "netbox_more_metrics"
     verbose_name = "More Metrics"
     description = "Export custom metrics from NetBox data."
-    version = "0.1.1"
+    version = "0.2.0"
     author = "Daan van Gorkum"
     author_email = "me+netbox@dj.vg"
     base_url = "more-metrics"
