@@ -6,6 +6,8 @@ from utilities.forms.fields import (
     DynamicModelMultipleChoiceField,
 )
 
+from netbox_more_metrics.choices import MetricValueChoices
+from netbox_more_metrics.fields import DynamicMetricValueOptionField
 from netbox_more_metrics.models import Metric, MetricCollection
 
 
@@ -26,10 +28,19 @@ class MetricForm(NetBoxModelForm):
     )
     metric_description = forms.CharField(label="Description")
 
+    metric_value = DynamicMetricValueOptionField(
+        query_params={"object_type": "$content_type"},
+        object_type_field="content_type",
+        help_text="Select the value used for the metric. This might ignore aggregation done by labels.",
+    )
+
     fieldsets = (
         ("", ("name", "metric_description", "enabled", "tags")),
-        ("Metric configuration", ("metric_name", "metric_labels", "metric_type")),
         ("Metric source", ("content_type", "filter")),
+        (
+            "Metric configuration",
+            ("metric_name", "metric_labels", "metric_type", "metric_value"),
+        ),
         ("Metric exposition", ("collections",)),
     )
 
@@ -42,7 +53,19 @@ class MetricForm(NetBoxModelForm):
             "metric_name",
             "metric_labels",
             "metric_type",
+            "metric_value",
             "filter",
             "content_type",
             "collections",
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Set the choices for the content_type field.
+        if self.data:
+            content_type = self.data.get("content_type")
+            if content_type:
+                self.fields[
+                    "metric_value"
+                ].choices = MetricValueChoices.choices_for_contenttype(content_type)

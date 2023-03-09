@@ -6,7 +6,7 @@ Create custom metrics and export information from NetBox into your timeseries da
 
 | NetBox Version | Plugin Version |
 |----------------|----------------|
-|     3.4        |      0.1.0     |
+|     3.4        | 0.1.X, 0.2.X   |
 
 ## Installing
 

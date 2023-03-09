@@ -88,8 +88,13 @@ class DynamicMetricCollector(Collector):
         self.name = metric.metric_name
         self.description = metric.metric_description
         self.metric_family = self._metric.metric_family
+        self.metric_value = self._metric.metric_value or "count"
         self.model = self._metric.content_type.model_class()
         self.queryset = self.model.objects.all()
+
+        # FIXME would be nice if we can put this in the choices someway.
+        self.metric_value_is_method = not self.metric_value == "count"
+
         self.filter = self._metric.filter
         self.labels = self._metric.metric_labels
         self.created = time()
@@ -146,34 +151,35 @@ class DynamicMetricCollector(Collector):
         return self.__class__(registry=self._registry, metric=self._metric)
 
     def get_queryset(self):
+        qs = self.queryset
         if self.filter:
-            return self.queryset.filter(**self.filter)
+            qs = qs.filter(**self.filter)
 
-        return self.queryset
+        return qs
 
-    def get_source_annotations(self):
-        return {f"source_{field}": F(field) for field in self.labels}
-
-    def get_destination_annotations(self):
+    def get_label_annotations(self):
         return {
-            field: Coalesce(
-                Cast(f"source_{field}", output_field=CharField()), Value("null")
+            f"__metric_label_{field}": Coalesce(
+                Cast(F(field), output_field=CharField()), Value("null")
             )
             for field in self.labels
         }
 
     def get_metric_result(self):
-        source_annotations = self.get_source_annotations()
-        values = source_annotations.keys()
-        final_annotations = self.get_destination_annotations()
+        label_annotations = self.get_label_annotations()
+        values = label_annotations.keys()
 
-        return (
+        if self.metric_value_is_method:
+            return self.get_queryset().annotate(count=Count("*"), **label_annotations)
+
+        base_qs = (
             self.get_queryset()
-            .annotate(**source_annotations)
-            .values(*values)
-            .annotate(count=Count("*"), **final_annotations)
-            .values("count", *self.labels)
+            .values(*self.labels)
+            .annotate(count=Count("*"), **label_annotations)
+            .values("count", *values)
         )
+
+        return base_qs
 
     def is_metric_enabled(self):
         if not self._metric.enabled:
@@ -219,11 +225,27 @@ class DynamicMetricCollector(Collector):
         results = self.get_metric_result()
 
         for result in results:
-            count = result.pop("count")
+            if isinstance(result, dict):
+                labels = {
+                    field: result.get(f"__metric_label_{field}")
+                    for field in self.labels
+                }
+                value = result.pop(self.metric_value)
+            else:
+                labels = {
+                    field: getattr(result, f"__metric_label_{field}")
+                    for field in self.labels
+                }
+                value = (
+                    getattr(result, self.metric_value)
+                    if not self.metric_value_is_method
+                    else getattr(result, self.metric_value)()
+                )
+
             if self.metric_family is InfoMetricFamily:
                 metric.add_metric(labels="", value=result)
             else:
-                metric.add_metric(result.values(), count)
+                metric.add_metric(labels.values(), value)
 
         yield metric
 
