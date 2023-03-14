@@ -69,3 +69,8 @@ class MetricForm(NetBoxModelForm):
                 self.fields[
                     "metric_value"
                 ].choices = MetricValueChoices.choices_for_contenttype(content_type)
+        elif self.instance.pk:
+            content_type = self.instance.content_type.model_class()
+            self.fields[
+                "metric_value"
+            ].choices = MetricValueChoices.choices_for_contenttype(content_type)

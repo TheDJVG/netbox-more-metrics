@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 (FUTURE)
+
+### Bugfixes
+
+* [#15](https://github.com/TheDJVG/netbox-more-metrics/issues/15) - Initial choices not set for existing metric on edit.
+
+
 ## 0.2.0 (2023-03-09)
 
 ### Features
