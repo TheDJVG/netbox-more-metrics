@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.1 (FUTURE)
+## 0.2.1 (2023-03-14)
 
 ### Bugfixes
 
