@@ -38,6 +38,7 @@ class MetricValueChoices(ChoiceSet):
             "ipam.Aggregate",
             (("get_utilization", "Percentage Utilized"),),
         ),
+        ("ipam.Iprange", (("get_utilization", "Percentage Utilized"),)),
     )
     CHOICES_BY_MODEL = dict(CHOICES)
 
