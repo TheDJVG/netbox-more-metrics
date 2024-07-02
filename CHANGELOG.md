@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2 (XXXX-XX-XX)
+
+### Bugfixes
+* [#22](https://github.com/TheDJVG/netbox-more-metrics/issues/22) - Incorrect exception handler when Metric does not exist.
+
 ## 0.2.1 (2023-03-14)
 
 ### Bugfixes

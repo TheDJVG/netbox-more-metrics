@@ -199,7 +199,7 @@ class DynamicMetricCollector(Collector):
         if self._is_default_registry:
             try:
                 self._metric.refresh_from_db()
-            except Metric.objects.DoesNotExist:
+            except Metric.DoesNotExist:
                 # If the object has disappeared we unregister ourselves.
                 self.unregister()
                 return
