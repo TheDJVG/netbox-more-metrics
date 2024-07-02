@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.2 (XXXX-XX-XX)
+## 0.2.2 (2024-07-02)
 
 ### Bugfixes
 * [#22](https://github.com/TheDJVG/netbox-more-metrics/issues/22) - Incorrect exception handler when Metric does not exist.
@@ -10,7 +10,6 @@
 ### Bugfixes
 
 * [#15](https://github.com/TheDJVG/netbox-more-metrics/issues/15) - Initial choices not set for existing metric on edit.
-
 
 ## 0.2.0 (2023-03-09)
 
