@@ -14,7 +14,7 @@ flush-data:
 	docker compose run netbox ./manage.py flush --no-input
 
 load-data:
-	docker compose run  netbox ./manage.py loaddata /tmp/demo-data.json
+	docker compose run netbox ./manage.py loaddata /tmp/demo-data.json
 
 fix-data:
 	docker compose run netbox ./manage.py trace_paths --force --no-input
@@ -32,7 +32,7 @@ stop:
 	docker compose down
 
 logs:
-	docker compose logs netbox -f
+	-docker compose logs netbox -f
 
 migrations:
 	docker compose run netbox ./manage.py makemigrations --no-input --no-header netbox_more_metrics
