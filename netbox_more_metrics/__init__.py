@@ -1,9 +1,7 @@
-from contextlib import suppress
-
-from django.db.utils import ProgrammingError
+from django.db.backends.signals import connection_created
 from netbox.plugins import PluginConfig
-from prometheus_client import REGISTRY
 
+from netbox_more_metrics.signals import start_collectors
 from netbox_more_metrics.utilities import enable_metrics
 
 
@@ -23,15 +21,7 @@ class NetBoxMoreMetricsConfig(PluginConfig):
 
         # Only enable the global metrics if we want to and the application is ready to serve them.
         if enable_metrics():
-            with suppress(ProgrammingError):
-                from netbox_more_metrics.collectors import (
-                    DynamicMetricCollectionCollector,
-                )
-                from netbox_more_metrics.metrics import (  # noqa: F401
-                    dynamic_metric_collectors,
-                )
-
-                DynamicMetricCollectionCollector(registry=REGISTRY)
+            connection_created.connect(start_collectors)
 
 
 config = NetBoxMoreMetricsConfig
