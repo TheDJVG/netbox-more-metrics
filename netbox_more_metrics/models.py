@@ -1,4 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import FieldError, ValidationError
 from django.db import models
@@ -50,7 +49,7 @@ class Metric(NetBoxModel, ObjectAbsoluteUrlMixin):
     metric_type = models.CharField(max_length=50, choices=MetricTypeChoices)
     metric_value = models.CharField(max_length=50, default="count")
     content_type = models.ForeignKey(
-        to=ContentType,
+        to="core.ObjectType",
         related_name="+",
         verbose_name="Object type",
         help_text=_("The object to which this Metric applies."),

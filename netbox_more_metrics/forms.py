@@ -1,10 +1,11 @@
+from core.models import ObjectType
 from django import forms
-from django.contrib.contenttypes.models import ContentType
 from netbox.forms import NetBoxModelForm
 from utilities.forms.fields import (
     ContentTypeChoiceField,
     DynamicModelMultipleChoiceField,
 )
+from utilities.forms.rendering import FieldSet
 
 from netbox_more_metrics.choices import MetricValueChoices
 from netbox_more_metrics.fields import DynamicMetricValueOptionField
@@ -24,7 +25,7 @@ class MetricForm(NetBoxModelForm):
         queryset=MetricCollection.objects.all()
     )
     content_type = ContentTypeChoiceField(
-        label="Object Type", queryset=ContentType.objects.all()
+        label="Object Type", queryset=ObjectType.objects.all()
     )
     metric_description = forms.CharField(label="Description")
 
@@ -35,13 +36,16 @@ class MetricForm(NetBoxModelForm):
     )
 
     fieldsets = (
-        ("", ("name", "metric_description", "enabled", "tags")),
-        ("Metric source", ("content_type", "filter")),
-        (
-            "Metric configuration",
-            ("metric_name", "metric_labels", "metric_type", "metric_value"),
+        FieldSet("name", "metric_description", "enabled", "tags"),
+        FieldSet("content_type", "filter", name="Metric source"),
+        FieldSet(
+            "metric_name",
+            "metric_labels",
+            "metric_type",
+            "metric_value",
+            name="Metric configuration",
         ),
-        ("Metric exposition", ("collections",)),
+        FieldSet("collections", name="Metric exposition"),
     )
 
     class Meta:
@@ -66,11 +70,11 @@ class MetricForm(NetBoxModelForm):
         if self.data:
             content_type = self.data.get("content_type")
             if content_type:
-                self.fields[
-                    "metric_value"
-                ].choices = MetricValueChoices.choices_for_contenttype(content_type)
+                self.fields["metric_value"].choices = (
+                    MetricValueChoices.choices_for_contenttype(content_type)
+                )
         elif self.instance.pk:
             content_type = self.instance.content_type.model_class()
-            self.fields[
-                "metric_value"
-            ].choices = MetricValueChoices.choices_for_contenttype(content_type)
+            self.fields["metric_value"].choices = (
+                MetricValueChoices.choices_for_contenttype(content_type)
+            )

@@ -16,6 +16,10 @@ class MetricCollectionViewSet(NetBoxModelViewSet):
 
 
 class MetricValueTypeOptionsViewSet(viewsets.ViewSet):
+    """
+    Return valid Metric Value Type for an Object Type.
+    """
+
     permission_classes = []
 
     def list(self, request):

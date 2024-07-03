@@ -1,12 +1,11 @@
-from extras.plugins import PluginMenuButton, PluginMenuItem
-from utilities.choices import ButtonColorChoices
+from netbox.plugins import PluginMenuButton, PluginMenuItem
 
 metriccollection_buttons = [
     PluginMenuButton(
         link="plugins:netbox_more_metrics:metriccollection_add",
         title="Add",
         icon_class="mdi mdi-plus-thick",
-        color=ButtonColorChoices.GREEN,
+        permissions=("netbox_more_metrics.add_metriccollection",),
     )
 ]
 
@@ -15,10 +14,9 @@ metric_buttons = [
         link="plugins:netbox_more_metrics:metric_add",
         title="Add",
         icon_class="mdi mdi-plus-thick",
-        color=ButtonColorChoices.GREEN,
+        permissions=("netbox_more_metrics.add_metric",),
     )
 ]
-
 
 menu_items = (
     PluginMenuItem(

@@ -23,7 +23,7 @@ from netbox_more_metrics.tables import MetricCollectionTable, MetricTable
 
 class MetricCollectionListView(ObjectListView):
     queryset = MetricCollection.objects.all()
-    actions = ("add",)
+    actions = {"add": {"add"}}
     table = MetricCollectionTable
 
 
@@ -85,7 +85,7 @@ class MetricListView(ObjectListView):
             output_field=TextField(),
         )
     )
-    actions = ("add",)
+    actions = {"add": {"add"}}
     table = MetricTable
 
 

@@ -1,10 +1,10 @@
-from django.contrib.contenttypes.models import ContentType
+from core.models import ObjectType
+from netbox.choices import ChoiceSet
 from prometheus_client.metrics_core import (
     CounterMetricFamily,
     GaugeMetricFamily,
     InfoMetricFamily,
 )
-from utilities.choices import ChoiceSet
 
 
 class MetricTypeChoices(ChoiceSet):
@@ -50,8 +50,8 @@ class MetricValueChoices(ChoiceSet):
     def choices_for_contenttype(cls, model) -> tuple:
         if isinstance(model, (str, int)):
             try:
-                model = ContentType.objects.get_for_id(model).model_class()
-            except ContentType.DoesNotExist:
+                model = ObjectType.objects.get_for_id(model).model_class()
+            except ObjectType.DoesNotExist:
                 return cls.DEFAULT_CHOICES
 
         app_name, model_name = model._meta.label.split(".")
