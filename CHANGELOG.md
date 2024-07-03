@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0 (XXXX-XX-XX)
+## 0.3.0 (2024-07-04)
 
 First release compatible for NetBox 4.0. Earlier Netbox versions are not supported.
 
