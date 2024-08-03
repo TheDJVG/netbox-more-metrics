@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1 (2024-08-03)
+
+### Bugfixes
+* [#28](https://github.com/TheDJVG/netbox-more-metrics/issues/28) - Label value from JSON field contains double quotes.
+* [#30](https://github.com/TheDJVG/netbox-more-metrics/issues/30) - Info metric was show wrong result data causing incorrect label names.
+
+
 ## 0.3.0 (2024-07-04)
 
 First release compatible for NetBox 4.0. Earlier Netbox versions are not supported.
@@ -7,7 +14,9 @@ First release compatible for NetBox 4.0. Earlier Netbox versions are not support
 ## 0.2.2 (2024-07-02)
 
 ### Bugfixes
-* [#22](https://github.com/TheDJVG/netbox-more-metrics/issues/22) - Incorrect exception handler when Metric does not exist.
+
+* [#22](https://github.com/TheDJVG/netbox-more-metrics/issues/22) - Incorrect exception handler when Metric does not
+  exist.
 
 ## 0.2.1 (2023-03-14)
 
@@ -18,8 +27,9 @@ First release compatible for NetBox 4.0. Earlier Netbox versions are not support
 ## 0.2.0 (2023-03-09)
 
 ### Features
+
 * [#3](https://github.com/TheDJVG/netbox-more-metrics/issues/5) - Metric value based on NetBox objects.
-  * For example get the percentage of IPs in a Prefix/Aggregate occupied, or how full a rack is.
+    * For example get the percentage of IPs in a Prefix/Aggregate occupied, or how full a rack is.
 
 ## 0.1.1 (2023-02-27)
 
