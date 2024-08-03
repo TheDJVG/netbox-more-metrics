@@ -3,7 +3,7 @@ from time import time
 from typing import Iterable
 
 from django.core.exceptions import FieldError
-from django.db.models import CharField, Count, F, Value
+from django.db.models import CharField, Count, F, Func, Value
 from django.db.models.functions import Cast, Coalesce
 from prometheus_client import metrics_core
 from prometheus_client.core import (
@@ -158,12 +158,25 @@ class DynamicMetricCollector(Collector):
         return qs
 
     def get_label_annotations(self):
-        return {
-            f"__metric_label_{field}": Coalesce(
-                Cast(F(field), output_field=CharField()), Value("null")
-            )
-            for field in self.labels
-        }
+        annotations = {}
+        for field in self.labels:
+            field_name = f"__metric_label_{field}"
+            if field.startswith("custom_field_data__"):
+                keys = [Value(key) for key in field.split("__")[1:]]
+                annotations[field_name] = Coalesce(
+                    Func(
+                        F("custom_field_data"),
+                        *keys,
+                        function="jsonb_extract_path_text",
+                        output_field=CharField(),
+                    ),
+                    Value("null"),
+                )
+            else:
+                annotations[field_name] = Coalesce(
+                    Cast(F(field), output_field=CharField()), Value("null")
+                )
+        return annotations
 
     def get_metric_result(self):
         label_annotations = self.get_label_annotations()
