@@ -256,7 +256,7 @@ class DynamicMetricCollector(Collector):
                 )
 
             if self.metric_family is InfoMetricFamily:
-                metric.add_metric(labels="", value=result)
+                metric.add_metric(labels="", value=labels)
             else:
                 metric.add_metric(labels.values(), value)
 
