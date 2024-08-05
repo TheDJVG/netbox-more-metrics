@@ -6,7 +6,11 @@ from django.utils.translation import gettext as _
 from netbox.models import NetBoxModel
 
 from netbox_more_metrics.choices import MetricTypeChoices
-from netbox_more_metrics.validators import validate_label_name, validate_metric_name
+from netbox_more_metrics.validators import (
+    validate_label_name,
+    validate_label_renames,
+    validate_metric_name,
+)
 
 
 class ObjectAbsoluteUrlMixin:
@@ -58,6 +62,13 @@ class Metric(NetBoxModel, ObjectAbsoluteUrlMixin):
     filter = models.JSONField(
         null=False, default=dict, blank=True, help_text=_("QuerySet filter")
     )
+    label_renames = models.JSONField(
+        null=False,
+        default=dict,
+        blank=True,
+        help_text=_("Label renaming"),
+        validators=[validate_label_renames],
+    )
     collections = models.ManyToManyField(to=MetricCollection, related_name="metrics")
 
     def __str__(self):
@@ -85,6 +96,29 @@ class Metric(NetBoxModel, ObjectAbsoluteUrlMixin):
                 raise ValidationError({"filter": f"Filter invalid: {e}"})
         else:
             self.filter = {}
+
+        if self.label_renames:
+            # Make sure all renamed labels exists as labels
+            for label in self.label_renames:
+                if label not in self.metric_labels:
+                    raise ValidationError(
+                        {
+                            "label_renames": f"Label '{label}' is not in the metric labels."
+                        }
+                    )
+
+            # Make sure there's no duplicate label names
+            for label in self.metric_labels:
+                # First check if the label is in the label_renames:
+                if label in self.label_renames.values():
+                    # If it is it's possible that the label is being renamed to something else, if not, trigger a
+                    # ValidationError
+                    if label == self.label_renames.get(label):
+                        raise ValidationError(
+                            {
+                                "label_renames": f"Label '{label}' is being shadowed by a label rename."
+                            }
+                        )
 
     @property
     def metric_family(self):

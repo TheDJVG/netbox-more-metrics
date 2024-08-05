@@ -35,12 +35,20 @@ class MetricForm(NetBoxModelForm):
         help_text="Select the value used for the metric. This might ignore aggregation done by labels.",
     )
 
+    label_renames = forms.JSONField(
+        label="Label renaming",
+        help_text="Rename label names to make them clearer. "
+        "For example, 'device__manufacturer_slug' to 'manufacturer'.",
+        required=False,
+    )
+
     fieldsets = (
         FieldSet("name", "metric_description", "enabled", "tags"),
         FieldSet("content_type", "filter", name="Metric source"),
         FieldSet(
             "metric_name",
             "metric_labels",
+            "label_renames",
             "metric_type",
             "metric_value",
             name="Metric configuration",
@@ -58,6 +66,7 @@ class MetricForm(NetBoxModelForm):
             "metric_labels",
             "metric_type",
             "metric_value",
+            "label_renames",
             "filter",
             "content_type",
             "collections",
