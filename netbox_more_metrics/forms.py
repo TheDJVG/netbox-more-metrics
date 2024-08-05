@@ -4,6 +4,7 @@ from netbox.forms import NetBoxModelForm
 from utilities.forms.fields import (
     ContentTypeChoiceField,
     DynamicModelMultipleChoiceField,
+    JSONField,
 )
 from utilities.forms.rendering import FieldSet
 
@@ -35,12 +36,23 @@ class MetricForm(NetBoxModelForm):
         help_text="Select the value used for the metric. This might ignore aggregation done by labels.",
     )
 
+    label_renames = JSONField(
+        label="Label renaming",
+        help_text="Rename label names to make them clearer. "
+        "For example, 'device__manufacturer_slug' to 'manufacturer':"
+        """<pre>{
+    "device__manufacturer_slug": "manufacturer"
+}</pre>""",
+        required=False,
+    )
+
     fieldsets = (
         FieldSet("name", "metric_description", "enabled", "tags"),
         FieldSet("content_type", "filter", name="Metric source"),
         FieldSet(
             "metric_name",
             "metric_labels",
+            "label_renames",
             "metric_type",
             "metric_value",
             name="Metric configuration",
@@ -58,10 +70,14 @@ class MetricForm(NetBoxModelForm):
             "metric_labels",
             "metric_type",
             "metric_value",
+            "label_renames",
             "filter",
             "content_type",
             "collections",
         )
+        field_classes = {
+            "filter": JSONField,
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

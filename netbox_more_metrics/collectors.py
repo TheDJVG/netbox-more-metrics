@@ -96,7 +96,10 @@ class DynamicMetricCollector(Collector):
         self.metric_value_is_method = not self.metric_value == "count"
 
         self.filter = self._metric.filter
-        self.labels = self._metric.metric_labels
+        self.labels = {
+            field: self._metric.label_renames.get(field, field)
+            for field in self._metric.metric_labels
+        }
         self.created = time()
 
         self._internal_labels = (str(self.pk), self.name)
@@ -132,7 +135,7 @@ class DynamicMetricCollector(Collector):
     def test_labels(self):
         # Test the labels make sure they're valid.
         try:
-            self.queryset.values(*self.labels)
+            self.queryset.values(*self.labels.keys())
         except FieldError:
             logger.exception("Metric '%s' (%d) labels are invalid.", self.name, self.pk)
             return False
@@ -159,8 +162,8 @@ class DynamicMetricCollector(Collector):
 
     def get_label_annotations(self):
         annotations = {}
-        for field in self.labels:
-            field_name = f"__metric_label_{field}"
+        for field, label_name in self.labels.items():
+            field_name = f"__metric_label_{label_name}"
             if field.startswith("custom_field_data__"):
                 keys = [Value(key) for key in field.split("__")[1:]]
                 annotations[field_name] = Coalesce(
@@ -187,7 +190,7 @@ class DynamicMetricCollector(Collector):
 
         base_qs = (
             self.get_queryset()
-            .values(*self.labels)
+            .values(*self.labels.keys())
             .annotate(count=Count("*"), **label_annotations)
             .values("count", *values)
         )
@@ -241,13 +244,13 @@ class DynamicMetricCollector(Collector):
             if isinstance(result, dict):
                 labels = {
                     field: result.get(f"__metric_label_{field}")
-                    for field in self.labels
+                    for field in self.labels.values()
                 }
                 value = result.pop(self.metric_value)
             else:
                 labels = {
                     field: getattr(result, f"__metric_label_{field}")
-                    for field in self.labels
+                    for field in self.labels.values()
                 }
                 value = (
                     getattr(result, self.metric_value)
