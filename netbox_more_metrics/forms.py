@@ -39,7 +39,10 @@ class MetricForm(NetBoxModelForm):
     label_renames = JSONField(
         label="Label renaming",
         help_text="Rename label names to make them clearer. "
-        "For example, 'device__manufacturer_slug' to 'manufacturer'.",
+        "For example, 'device__manufacturer_slug' to 'manufacturer':"
+        """<pre>{
+    "device__manufacturer_slug": "manufacturer"
+}</pre>""",
         required=False,
     )
 
