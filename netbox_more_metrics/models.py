@@ -113,7 +113,10 @@ class Metric(NetBoxModel, ObjectAbsoluteUrlMixin):
                 if label in self.label_renames.values():
                     # If it is it's possible that the label is being renamed to something else, if not, trigger a
                     # ValidationError
-                    if label == self.label_renames.get(label):
+                    if (
+                        label not in self.label_renames
+                        or label == self.label_renames.get(label)
+                    ):
                         raise ValidationError(
                             {
                                 "label_renames": f"Label '{label}' is being shadowed by a label rename."
