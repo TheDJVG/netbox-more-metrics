@@ -17,6 +17,26 @@ validate_label_name = RegexValidator(
 )
 
 
+def validate_labels(value):
+    """
+    Make sure we don't have duplicate labels.
+    """
+    if not isinstance(value, list):
+        raise ValidationError(
+            _("Invalid data type: %(value)s. Expected a list."),
+            params={"value": value},
+        )
+
+    seen_label_names = set()
+    for val in value:
+        if val in seen_label_names:
+            raise ValidationError(
+                _("Duplicate label: %(val)s."),
+                params={"val": val},
+            )
+        seen_label_names.add(val)
+
+
 def validate_label_renames(value):
     """
     Validator to ensure that the JSONField only contains key-value pairs where both keys and values are strings.

@@ -4,15 +4,21 @@ from rest_framework.response import Response
 
 from netbox_more_metrics.api.serializers import (
     MetricCollectionSerializer,
+    MetricSerializer,
     MetricValueOptionSerializer,
 )
 from netbox_more_metrics.choices import MetricValueChoices
-from netbox_more_metrics.models import MetricCollection
+from netbox_more_metrics.models import Metric, MetricCollection
 
 
 class MetricCollectionViewSet(NetBoxModelViewSet):
     queryset = MetricCollection.objects.all()
     serializer_class = MetricCollectionSerializer
+
+
+class MetricViewSet(NetBoxModelViewSet):
+    queryset = Metric.objects.all()
+    serializer_class = MetricSerializer
 
 
 class MetricValueTypeOptionsViewSet(viewsets.ViewSet):

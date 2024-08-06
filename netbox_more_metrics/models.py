@@ -5,10 +5,11 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from netbox.models import NetBoxModel
 
-from netbox_more_metrics.choices import MetricTypeChoices
+from netbox_more_metrics.choices import MetricTypeChoices, MetricValueChoices
 from netbox_more_metrics.validators import (
     validate_label_name,
     validate_label_renames,
+    validate_labels,
     validate_metric_name,
 )
 
@@ -48,7 +49,8 @@ class Metric(NetBoxModel, ObjectAbsoluteUrlMixin):
     )
     metric_description = models.CharField(max_length=255)
     metric_labels = ArrayField(
-        base_field=models.CharField(max_length=50, validators=[validate_label_name])
+        base_field=models.CharField(max_length=50, validators=[validate_label_name]),
+        validators=[validate_labels],
     )
     metric_type = models.CharField(max_length=50, choices=MetricTypeChoices)
     metric_value = models.CharField(max_length=50, default="count")
@@ -96,6 +98,18 @@ class Metric(NetBoxModel, ObjectAbsoluteUrlMixin):
                 raise ValidationError({"filter": f"Filter invalid: {e}"})
         else:
             self.filter = {}
+
+        # Check that the metric_value is valid for the model
+        metric_value_choices = tuple(
+            zip(*MetricValueChoices.choices_for_contenttype(model))
+        )[0]
+        if self.metric_value not in metric_value_choices:
+            raise ValidationError(
+                {
+                    "metric_value": f"Metric value '{self.metric_value}' is not valid for the object type'. "
+                    f"Choices: {', '.join(metric_value_choices)}"
+                }
+            )
 
         if self.label_renames:
             # Make sure all renamed labels exists as labels

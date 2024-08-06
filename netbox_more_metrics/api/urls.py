@@ -4,6 +4,7 @@ from netbox_more_metrics.api import views
 
 router = NetBoxRouter()
 router.register("collections", views.MetricCollectionViewSet)
+router.register("metrics", views.MetricViewSet)
 router.register(
     "metric-value-type-options",
     views.MetricValueTypeOptionsViewSet,
