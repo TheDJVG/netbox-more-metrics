@@ -6,7 +6,7 @@ from rest_framework import serializers
 from netbox_more_metrics.models import Metric, MetricCollection
 
 
-class NestedMetricCollectionSerializer(WritableNestedSerializer):
+class NestedMetricSerializer(WritableNestedSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name="plugins-api:netbox_more_metrics-api:metric-detail"
     )
@@ -29,7 +29,7 @@ class MetricCollectionSerializer(NetBoxModelSerializer):
     export_url = serializers.HyperlinkedIdentityField(
         view_name="plugins:netbox_more_metrics:metriccollection_metrics"
     )
-    metrics = NestedMetricCollectionSerializer(many=True, read_only=True)
+    metrics = NestedMetricSerializer(many=True, read_only=True)
 
     class Meta:
         model = MetricCollection
