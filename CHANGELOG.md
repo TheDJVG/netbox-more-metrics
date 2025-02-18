@@ -2,6 +2,9 @@
 
 ## 0.3.2 (2025-02-18)
 
+### Features
+* [#9](https://github.com/TheDJVG/netbox-more-metrics/issues/9) - Allow renaming of label names
+
 ### Bugfixes
 * [#37](https://github.com/TheDJVG/netbox-more-metrics/issues/37) - Incorrect mixin for models does not override `get_obsolute_url` from NetBox model.
 
