@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2 (2025-02-18)
+
+### Bugfixes
+* [#37](https://github.com/TheDJVG/netbox-more-metrics/issues/37) - Incorrect mixin for models does not override `get_obsolute_url` from NetBox model.
+
+
 ## 0.3.1 (2024-08-03)
 
 ### Bugfixes
