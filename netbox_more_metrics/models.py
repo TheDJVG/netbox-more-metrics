@@ -19,7 +19,7 @@ class ObjectAbsoluteUrlMixin:
         return reverse(path, args=[self.pk])
 
 
-class MetricCollection(NetBoxModel, ObjectAbsoluteUrlMixin):
+class MetricCollection(ObjectAbsoluteUrlMixin, NetBoxModel):
     """
     Model that represents a CollectorRegistry.
     You can connect Metric instances to this to export only these specific metrics.
@@ -36,7 +36,7 @@ class MetricCollection(NetBoxModel, ObjectAbsoluteUrlMixin):
         return self.name
 
 
-class Metric(NetBoxModel, ObjectAbsoluteUrlMixin):
+class Metric(ObjectAbsoluteUrlMixin, NetBoxModel):
     """
     Represents a single Metric to be exported.
     """
