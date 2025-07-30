@@ -35,6 +35,8 @@ class MetricCollection(ObjectAbsoluteUrlMixin, NetBoxModel):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('name',)
 
 class Metric(ObjectAbsoluteUrlMixin, NetBoxModel):
     """
@@ -126,3 +128,6 @@ class Metric(ObjectAbsoluteUrlMixin, NetBoxModel):
     @property
     def metric_family(self):
         return MetricTypeChoices.TYPES[self.metric_type]
+
+    class Meta:
+        ordering = ('name',)
