@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "netbox-more-metrics"
-version = "0.3.2"
+version = "0.3.3"
 description = "Provide customized metrics on data stored in NetBox."
 authors = ["Daan van Gorkum <me+netbox@dj.vg>"]
 readme = "README.md"
