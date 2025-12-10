@@ -4,6 +4,7 @@
 
 ### Bugfixes
 * [#40](https://github.com/TheDJVG/netbox-more-metrics/issues/40) - Resolve QuerySetNotOrdered exception when trying to paginate unordered API querysets
+* [#43](https://github.com/TheDJVG/netbox-more-metrics/issues/43) - Resolve nested labels not being renamed
 
 ## 0.3.2 (2025-02-18)
 
