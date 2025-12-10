@@ -33,6 +33,9 @@ class MetricCollection(ObjectAbsoluteUrlMixin, NetBoxModel):
         default=False, help_text=_("Include collection in default metric REGISTRY.")
     )
 
+    class Meta:
+        ordering = ("name", "pk")  # Name may be non-unique
+
     def __str__(self):
         return self.name
 
@@ -72,6 +75,9 @@ class Metric(ObjectAbsoluteUrlMixin, NetBoxModel):
         validators=[validate_label_renames],
     )
     collections = models.ManyToManyField(to=MetricCollection, related_name="metrics")
+
+    class Meta:
+        ordering = ("name", "pk")  # Name may be non-unique
 
     def __str__(self):
         return self.name
