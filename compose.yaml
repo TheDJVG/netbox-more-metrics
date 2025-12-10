@@ -6,7 +6,6 @@ services:
     build:
       context: .
       dockerfile: development/Dockerfile
-    image: netbox-plugin-development:${COMPOSE_PROJECT_NAME}
     depends_on:
       - postgres
       - redis
@@ -17,21 +16,19 @@ services:
       - ./development/demo-data.json:/tmp/demo-data.json:z,ro
       - ./:/source
     command: >
-      sh -c "python manage.py migrate && python manage.py collectstatic --noinput
-      && python manage.py runserver 0.0.0.0:8000"
-
+      sh -c "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
   # postgres
   postgres:
-    image: postgres:15-alpine
+    image: postgres:18-alpine
     env_file:
       - development/dev.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
   # redis
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     command:
       - sh
       - -c # this is to evaluate the $REDIS_PASSWORD from the env
@@ -39,7 +36,7 @@ services:
     env_file:
       - development/dev.env
   redis-cache:
-    image: redis:7-alpine
+    image: redis:8-alpine
     command:
       - sh
       - -c # this is to evaluate the $REDIS_PASSWORD from the env
