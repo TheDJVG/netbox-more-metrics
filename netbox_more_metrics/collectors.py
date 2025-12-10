@@ -234,7 +234,7 @@ class DynamicMetricCollector(Collector):
 
         # Create the metric
         metric: GaugeMetricFamily | CounterMetricFamily | InfoMetricFamily = (
-            self.metric_family(self.name, self.description, labels=self.labels)
+            self.metric_family(self.name, self.description, labels=self.labels.values())
         )
 
         # Get the data for the metric.
