@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.3 (2025-XX-XX)
+## 0.3.3 (2025-12-10)
 
 ### Bugfixes
 * [#40](https://github.com/TheDJVG/netbox-more-metrics/issues/40) - Resolve QuerySetNotOrdered exception when trying to paginate unordered API querysets
