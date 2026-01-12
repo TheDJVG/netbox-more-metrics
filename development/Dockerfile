@@ -1,4 +1,4 @@
-FROM netboxcommunity/netbox:v4.4
+FROM netboxcommunity/netbox:v4.5
 
 # Install poetry
 RUN /usr/local/bin/uv pip install --upgrade pip && /usr/local/bin/uv pip install poetry
