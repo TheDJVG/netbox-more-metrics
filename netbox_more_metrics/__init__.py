@@ -14,6 +14,9 @@ class NetBoxMoreMetricsConfig(PluginConfig):
     author = "Daan van Gorkum"
     author_email = "me+netbox@dj.vg"
     base_url = "more-metrics"
+    default_settings = {
+        "export_metrics_without_auth": False,
+    }
 
     def ready(self):
         # Make sure we call the NetBox plugin initialization to add the menus etc.

@@ -1,5 +1,6 @@
 from django.db.models import F, Func, TextField, Value
 from django.http import HttpResponse
+from netbox.plugins import get_plugin_config
 from netbox.views.generic import (
     ObjectDeleteView,
     ObjectEditView,
@@ -50,6 +51,12 @@ class MetricCollectionView(ObjectView):
 class MetricCollectionExportView(ObjectView):
     queryset = MetricCollection.objects.all()
     http_method_names = ("get",)
+
+    def has_permission(self):
+        if get_plugin_config("netbox_more_metrics", "export_metrics_without_auth"):
+            return True
+
+        return super().has_permission()
 
     def get(self, request, **kwargs):
         instance = self.get_object(**kwargs)
@@ -113,6 +120,12 @@ class MetricView(ObjectView):
 class MetricExportView(ObjectView):
     queryset = Metric.objects.all()
     http_method_names = ("get",)
+
+    def has_permission(self):
+        if get_plugin_config("netbox_more_metrics", "export_metrics_without_auth"):
+            return True
+
+        return super().has_permission()
 
     def get(self, request, **kwargs):
         instance = self.get_object(**kwargs)

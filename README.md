@@ -51,6 +51,15 @@ PLUGINS = [
 ]
 ```
 
+If you want to export the configured metrics without authentication set the plugin config `export_metrics_without_auth` to `True`.
+By default, normal NetBox view permissions apply.
+```python
+PLUGINS_CONFIG = {
+    'netbox_more_metrics' : {
+        'export_metrics_without_auth': True
+    }
+}
+```
 ## Features
 
 ### Custom metrics
