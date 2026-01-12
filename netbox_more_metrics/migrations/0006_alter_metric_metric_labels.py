@@ -10,7 +10,10 @@ import netbox_more_metrics.validators
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("netbox_more_metrics", "0004_metric_label_renames"),
+        (
+            "netbox_more_metrics",
+            "0005_alter_metric_options_alter_metriccollection_options",
+        ),
     ]
 
     operations = [
