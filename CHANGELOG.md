@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 (2026-01-12)
+
+First release for 0.4.0.
+
+The main changes in this version are enhanced API support, exclude filter and  the ability to disable authentication
+the metric(collection) endpoints.
+
+
 ## 0.3.4 (2026-01-12)
 
 Generic dependencies updates.
