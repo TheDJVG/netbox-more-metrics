@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.4 (2026-01-12)
+
+Generic dependencies updates.
+
+### Bugfixes
+* [PR#42](https://github.com/TheDJVG/netbox-more-metrics/pull/42) - Use Netbox BooleanColumn for tables
+
 ## 0.3.3 (2025-12-10)
 
 ### Bugfixes
