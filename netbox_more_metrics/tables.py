@@ -2,11 +2,12 @@ import django_tables2 as tables
 from netbox.tables import NetBoxTable, columns
 
 from netbox_more_metrics.models import Metric, MetricCollection
-
+from netbox.tables.columns import BooleanColumn
 
 class MetricCollectionTable(NetBoxTable):
     name = tables.Column(linkify=True)
-    include_in_default = tables.BooleanColumn(verbose_name="Exported globally")
+    enabled = BooleanColumn()
+    include_in_default = BooleanColumn(verbose_name="Exported globally")
 
     class Meta(NetBoxTable.Meta):
         model = MetricCollection
@@ -16,6 +17,7 @@ class MetricCollectionTable(NetBoxTable):
 
 class MetricTable(NetBoxTable):
     name = tables.Column(linkify=True)
+    enabled = BooleanColumn()
     metric_name = tables.Column(verbose_name="Metric")
     content_type = columns.ContentTypeColumn(verbose_name="Object type")
     metric_description = tables.Column(verbose_name="Description")
