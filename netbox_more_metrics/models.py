@@ -67,6 +67,9 @@ class Metric(ObjectAbsoluteUrlMixin, NetBoxModel):
     filter = models.JSONField(
         null=False, default=dict, blank=True, help_text=_("QuerySet filter")
     )
+    exclude = models.JSONField(
+        null=False, default=dict, blank=True, help_text=_("QuerySet exclude")
+    )
     label_renames = models.JSONField(
         null=False,
         default=dict,
@@ -104,6 +107,15 @@ class Metric(ObjectAbsoluteUrlMixin, NetBoxModel):
                 raise ValidationError({"filter": f"Filter invalid: {e}"})
         else:
             self.filter = {}
+
+        # Test the exclude filter
+        if self.exclude:
+            try:
+                model.objects.filter(**self.exclude)
+            except FieldError as e:
+                raise ValidationError({"exclude": f"Exclude invalid: {e}"})
+        else:
+            self.exclude = {}
 
         # Check that the metric_value is valid for the model
         metric_value_choices = tuple(

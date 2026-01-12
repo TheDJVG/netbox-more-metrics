@@ -86,6 +86,7 @@ class MetricSerializer(NetBoxModelSerializer):
             "metric_value",
             "content_type",
             "filter",
+            "exclude",
             "label_renames",
             "collections",
         )

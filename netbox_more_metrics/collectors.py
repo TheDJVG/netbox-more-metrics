@@ -96,6 +96,7 @@ class DynamicMetricCollector(Collector):
         self.metric_value_is_method = not self.metric_value == "count"
 
         self.filter = self._metric.filter
+        self.exclude = self._metric.exclude
         self.labels = {
             field: self._metric.label_renames.get(field, field)
             for field in self._metric.metric_labels
@@ -110,8 +111,12 @@ class DynamicMetricCollector(Collector):
             self._metric.pk,
         )
 
-        # If the filter/labels are not valid we should not start this collector.
-        if (self.filter and not self.test_filter()) or not self.test_labels():
+        # If the filter/exclude/labels are not valid we should not start this collector.
+        if (
+            (self.filter and not self.test_filter())
+            or (self.exclude and not self.test_exclude())
+            or not self.test_labels()
+        ):
             return
 
         registry.register(self)
@@ -127,6 +132,18 @@ class DynamicMetricCollector(Collector):
         except FieldError:
             logger.exception(
                 "Metric '%s' (%d) filter is not valid.", self.name, self.pk
+            )
+            return False
+
+        return True
+
+    def test_exclude(self):
+        # Test the exclude filter to make sure it's valid.
+        try:
+            self.queryset.filter(**self.exclude)
+        except FieldError:
+            logger.exception(
+                "Metric '%s' (%d) exclude is not valid.", self.name, self.pk
             )
             return False
 
@@ -157,6 +174,8 @@ class DynamicMetricCollector(Collector):
         qs = self.queryset
         if self.filter:
             qs = qs.filter(**self.filter)
+        if self.exclude:
+            qs = qs.exclude(**self.exclude)
 
         return qs
 

@@ -48,7 +48,7 @@ class MetricForm(NetBoxModelForm):
 
     fieldsets = (
         FieldSet("name", "metric_description", "enabled", "tags"),
-        FieldSet("content_type", "filter", name="Metric source"),
+        FieldSet("content_type", "filter", "exclude", name="Metric source"),
         FieldSet(
             "metric_name",
             "metric_labels",
@@ -72,12 +72,11 @@ class MetricForm(NetBoxModelForm):
             "metric_value",
             "label_renames",
             "filter",
+            "exclude",
             "content_type",
             "collections",
         )
-        field_classes = {
-            "filter": JSONField,
-        }
+        field_classes = {"filter": JSONField, "exclude": JSONField}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -91,6 +91,16 @@
                     {% endif %}
                 </div>
             </div>
+            <div class="card">
+                <h5 class="card-header">Exclude</h5>
+                <div class="card-body">
+                    {% if object.exclude %}
+                        <pre>{{ object.exclude | json }}</pre>
+                    {% else %}
+                        <span class="text-muted">None</span>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
