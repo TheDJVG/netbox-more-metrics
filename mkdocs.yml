@@ -5,6 +5,7 @@ repo_url: https://github.com/TheDJVG/netbox-more-metrics
 repo_name: TheDJVG/netbox-more-metrics
 nav:
   - Home: index.md
+  - Upgrade Strategy: netbox_upgrade_strategy.md
   - Changelog: changelog.md
 theme:
   name: material
