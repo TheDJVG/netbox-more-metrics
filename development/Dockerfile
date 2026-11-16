@@ -1,4 +1,5 @@
-FROM netboxcommunity/netbox:v4.5
+ARG NETBOX_VER=v4.5
+FROM netboxcommunity/netbox:${NETBOX_VER}
 
 # Install poetry
 RUN /usr/local/bin/uv pip install --upgrade pip && /usr/local/bin/uv pip install poetry

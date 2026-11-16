@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: development/Dockerfile
+      args:
+        NETBOX_VER: ${NETBOX_VER:-v4.5}
     depends_on:
       - postgres
       - redis
@@ -15,8 +17,13 @@ services:
       - ./development/configuration/logging.py:/etc/netbox/config/logging.py:z,ro
       - ./development/demo-data.json:/tmp/demo-data.json:z,ro
       - ./:/source
-    command: >
-      sh -c "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    command:
+      - sh
+      - -c
+      - |
+        python manage.py migrate &&
+        python manage.py collectstatic --noinput &&
+        python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
   # postgres
