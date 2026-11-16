@@ -1,5 +1,10 @@
+from typing import ClassVar
+
+from django.core.exceptions import PermissionDenied
 from django.db.models import F, Func, TextField, Value
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.views.generic import View
 from netbox.plugins import get_plugin_config
 from netbox.views.generic import (
     ObjectDeleteView,
@@ -9,6 +14,7 @@ from netbox.views.generic import (
 )
 from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, generate_latest
 
+from netbox_more_metrics import filtersets
 from netbox_more_metrics.collectors import (
     DynamicMetricCollectionCollector,
     DynamicMetricCollector,
@@ -24,7 +30,8 @@ from netbox_more_metrics.tables import MetricCollectionTable, MetricTable
 
 class MetricCollectionListView(ObjectListView):
     queryset = MetricCollection.objects.all()
-    actions = {"add": {"add"}}
+    filterset = filtersets.MetricCollectionFilterSet
+    actions: ClassVar[dict] = {"add": {"add"}}
     table = MetricCollectionTable
 
 
@@ -48,18 +55,31 @@ class MetricCollectionView(ObjectView):
         return {"metrics_table": metrics_table}
 
 
-class MetricCollectionExportView(ObjectView):
-    queryset = MetricCollection.objects.all()
+class MetricCollectionExportView(View):
     http_method_names = ("get",)
 
-    def has_permission(self):
+    def has_permission(self, request=None):
+        req = request or getattr(self, "request", None)
         if get_plugin_config("netbox_more_metrics", "export_metrics_without_auth"):
             return True
+        if req is None or not req.user.is_authenticated:
+            return False
+        return req.user.has_perm("netbox_more_metrics.view_metriccollection")
 
-        return super().has_permission()
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        if not self.has_permission(request):
+            raise PermissionDenied("Authentication and view permission required to export metrics.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, **kwargs):
-        instance = self.get_object(**kwargs)
+        if get_plugin_config("netbox_more_metrics", "export_metrics_without_auth"):
+            instance = get_object_or_404(MetricCollection, pk=kwargs["pk"])
+        else:
+            instance = get_object_or_404(
+                MetricCollection.objects.restrict(request.user, "view"),
+                pk=kwargs["pk"],
+            )
 
         registry = CollectorRegistry()
         DynamicMetricCollectionCollector(registry=registry, collection=instance)
@@ -92,7 +112,8 @@ class MetricListView(ObjectListView):
             output_field=TextField(),
         )
     )
-    actions = {"add": {"add"}}
+    filterset = filtersets.MetricFilterSet
+    actions: ClassVar[dict] = {"add": {"add"}}
     table = MetricTable
 
 
@@ -117,18 +138,31 @@ class MetricView(ObjectView):
         }
 
 
-class MetricExportView(ObjectView):
-    queryset = Metric.objects.all()
+class MetricExportView(View):
     http_method_names = ("get",)
 
-    def has_permission(self):
+    def has_permission(self, request=None):
+        req = request or getattr(self, "request", None)
         if get_plugin_config("netbox_more_metrics", "export_metrics_without_auth"):
             return True
+        if req is None or not req.user.is_authenticated:
+            return False
+        return req.user.has_perm("netbox_more_metrics.view_metric")
 
-        return super().has_permission()
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        if not self.has_permission(request):
+            raise PermissionDenied("Authentication and view permission required to export metrics.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, **kwargs):
-        instance = self.get_object(**kwargs)
+        if get_plugin_config("netbox_more_metrics", "export_metrics_without_auth"):
+            instance = get_object_or_404(Metric, pk=kwargs["pk"])
+        else:
+            instance = get_object_or_404(
+                Metric.objects.restrict(request.user, "view"),
+                pk=kwargs["pk"],
+            )
 
         registry = CollectorRegistry()
         DynamicMetricCollector(registry=registry, metric=instance)
