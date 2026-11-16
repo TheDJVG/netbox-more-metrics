@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.1 (2026-11-16)
+## 0.5.0 (2026-11-16)
 
 ### Features & Enhancements
 * [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Add `FilterSet` classes and global NetBox `SearchIndex` integration for `Metric` and `MetricCollection`

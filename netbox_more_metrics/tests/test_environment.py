@@ -179,7 +179,8 @@ class PackagingModernizationTier1TestCase(SimpleTestCase):
     def test_project_metadata_table(self):
         project = self.pyproject.get("project", {})
         self.assertEqual(project.get("name"), "netbox-more-metrics")
-        self.assertEqual(project.get("version"), "0.4.1")
+        self.assertEqual(project.get("version"), "0.5.0")
+        self.assertEqual(project.get("version"), NetBoxMoreMetricsConfig.version)
         self.assertEqual(project.get("license"), "MIT")
         self.assertEqual(project.get("readme"), "README.md")
 
