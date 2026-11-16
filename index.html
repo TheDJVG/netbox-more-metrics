@@ -732,7 +732,11 @@
 </tr>
 <tr>
 <td>4.0 &lt;= 4.5</td>
-<td>0.3.X, 0.4.X, 0.5.X</td>
+<td>0.3.X, 0.4.X</td>
+</tr>
+<tr>
+<td>4.0 &lt;= 4.7</td>
+<td>0.5.X</td>
 </tr>
 </tbody>
 </table>
@@ -797,11 +801,11 @@ By default, normal NetBox view permissions apply.
 <div class="highlight"><pre><span></span><code>make<span class="w"> </span>start
 </code></pre></div>
 <p>Run the automated test suite inside the NetBox container:</p>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>netbox_more_metrics
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-e<span class="w"> </span><span class="nv">DEBUG</span><span class="o">=</span>False<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>netbox_more_metrics
 </code></pre></div>
-<p>To build and test against a specific NetBox 4.x version (e.g. <code>v4.2</code> or <code>v4.5</code>):</p>
-<div class="highlight"><pre><span></span><code><span class="nv">NETBOX_VER</span><span class="o">=</span>v4.5<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>build<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">NETBOX_VER</span><span class="o">=</span>v4.5<span class="w"> </span>netbox
-<span class="nv">NETBOX_VER</span><span class="o">=</span>v4.5<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>netbox_more_metrics
+<p>To build and test against a specific NetBox 4.x version (e.g. <code>v4.2</code> or <code>v4.7</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="nv">NETBOX_VER</span><span class="o">=</span>v4.7<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>build<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">NETBOX_VER</span><span class="o">=</span>v4.7<span class="w"> </span>netbox
+<span class="nv">NETBOX_VER</span><span class="o">=</span>v4.7<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-e<span class="w"> </span><span class="nv">DEBUG</span><span class="o">=</span>False<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>netbox_more_metrics
 </code></pre></div>
 <p>See <a href="netbox_upgrade_strategy/">docs/netbox_upgrade_strategy.md</a> for details on CI matrix testing and maintaining compatibility with future NetBox releases.</p>
 <h3 id="future-ideas">Future ideas<a class="headerlink" href="#future-ideas" title="Permanent link">&para;</a></h3>
