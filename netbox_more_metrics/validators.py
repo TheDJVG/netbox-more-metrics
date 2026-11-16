@@ -2,19 +2,32 @@ from django.core.validators import RegexValidator, ValidationError
 from django.utils.regex_helper import _lazy_re_compile
 from django.utils.translation import gettext_lazy as _
 
-metric_name_re = _lazy_re_compile(r"^[a-zA-Z_][a-zA-Z0-9_]+\Z")
-validate_metric_name = RegexValidator(
+metric_name_re = _lazy_re_compile(r"^[a-zA-Z_:][a-zA-Z0-9_:]*\Z")
+metric_name_validator = RegexValidator(
     metric_name_re,
-    _("Enter a valid “metric_name” consisting of letters, numbers or underscores."),
+    _("Enter a valid “metric_name” consisting of letters, numbers, colons, or underscores."),
     "invalid",
 )
+validate_metric_name = metric_name_validator
 
-label_name_re = _lazy_re_compile(r"^[a-zA-Z_][a-zA-Z0-9_]+\Z")
-validate_label_name = RegexValidator(
+label_name_re = _lazy_re_compile(r"^[a-zA-Z_][a-zA-Z0-9_]*\Z")
+_label_name_regex_validator = RegexValidator(
     label_name_re,
     _("Enter a valid “label_name” consisting of letters, numbers or underscores."),
     "invalid",
 )
+
+
+def validate_label_name(value):
+    _label_name_regex_validator(value)
+    if value.startswith("__"):
+        raise ValidationError(
+            _("Label names starting with '__' are reserved for internal use."),
+            code="reserved",
+        )
+
+
+label_name_validator = validate_label_name
 
 
 def validate_labels(value):

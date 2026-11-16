@@ -48,11 +48,29 @@ class MetricValueChoices(ChoiceSet):
 
     @classmethod
     def choices_for_contenttype(cls, model) -> tuple:
-        if isinstance(model, (str, int)):
+        if isinstance(model, int) or (isinstance(model, str) and model.isdigit()):
             try:
-                model = ObjectType.objects.get_for_id(model).model_class()
-            except ObjectType.DoesNotExist:
+                obj_type = ObjectType.objects.get_for_id(int(model))
+                model = obj_type.model_class()
+                if not model:
+                    return cls.DEFAULT_CHOICES
+            except (ObjectType.DoesNotExist, ValueError):
                 return cls.DEFAULT_CHOICES
+        elif isinstance(model, str):
+            if "." in model:
+                try:
+                    app_label, model_name = model.split(".", 1)
+                    obj_type = ObjectType.objects.get_by_natural_key(app_label, model_name)
+                    model = obj_type.model_class()
+                    if not model:
+                        return cls.DEFAULT_CHOICES
+                except (ObjectType.DoesNotExist, ValueError):
+                    return cls.DEFAULT_CHOICES
+            else:
+                return cls.DEFAULT_CHOICES
+
+        if not hasattr(model, "_meta"):
+            return cls.DEFAULT_CHOICES
 
         app_name, model_name = model._meta.label.split(".")
         return cls.choices_for_model(app_name, model_name)
