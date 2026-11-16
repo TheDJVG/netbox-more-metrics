@@ -1,4 +1,4 @@
-from typing import ClassVar
+from typing import Any
 
 from django.conf import settings
 from django.contrib.auth.views import redirect_to_login
@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import F, Func, TextField, Value
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from django.views.generic import View
 from netbox.plugins import get_plugin_config
 from netbox.views.generic import (
@@ -25,9 +26,24 @@ from netbox_more_metrics.forms import MetricCollectionForm, MetricForm
 from netbox_more_metrics.models import Metric, MetricCollection
 from netbox_more_metrics.tables import MetricCollectionTable, MetricTable
 
+try:
+    from django.contrib.auth.decorators import login_not_required
+except ImportError:
+
+    def login_not_required(view_func):
+        return view_func
+
+
+try:
+    from netbox.object_actions import AddObject
+
+    LIST_VIEW_ACTIONS: Any = (AddObject,) if isinstance(ObjectListView.actions, tuple) else {"add": {"add"}}
+except ImportError:
+    LIST_VIEW_ACTIONS = {"add": {"add"}}
+
 
 class PluginLoginRequiredMixin:
-    """Ensure LOGIN_REQUIRED is enforced on UI views across NetBox 4.0-4.5."""
+    """Ensure LOGIN_REQUIRED is enforced on UI views across NetBox 4.0-4.7+."""
 
     def dispatch(self, request, *args, **kwargs):
         if getattr(settings, "LOGIN_REQUIRED", False) and not request.user.is_authenticated:
@@ -43,7 +59,7 @@ class PluginLoginRequiredMixin:
 class MetricCollectionListView(PluginLoginRequiredMixin, ObjectListView):
     queryset = MetricCollection.objects.all()
     filterset = filtersets.MetricCollectionFilterSet
-    actions: ClassVar[dict] = {"add": {"add"}}
+    actions = LIST_VIEW_ACTIONS
     table = MetricCollectionTable
 
 
@@ -67,6 +83,7 @@ class MetricCollectionView(PluginLoginRequiredMixin, ObjectView):
         return {"metrics_table": metrics_table}
 
 
+@method_decorator(login_not_required, name="dispatch")
 class MetricCollectionExportView(View):
     http_method_names = ("get",)
 
@@ -125,7 +142,7 @@ class MetricListView(PluginLoginRequiredMixin, ObjectListView):
         )
     )
     filterset = filtersets.MetricFilterSet
-    actions: ClassVar[dict] = {"add": {"add"}}
+    actions = LIST_VIEW_ACTIONS
     table = MetricTable
 
 
@@ -150,6 +167,7 @@ class MetricView(PluginLoginRequiredMixin, ObjectView):
         }
 
 
+@method_decorator(login_not_required, name="dispatch")
 class MetricExportView(View):
     http_method_names = ("get",)
 

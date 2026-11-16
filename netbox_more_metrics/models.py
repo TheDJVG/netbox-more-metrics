@@ -123,6 +123,10 @@ def validate_field_path(model, path: str, is_filter: bool = False):
                     f"Traversal to sensitive model '{related_model._meta.label}' via '{part}' in '{path}' is forbidden."
                 )
             current_model = related_model
+        elif isinstance(field, models.JSONField):
+            break
+        elif i < len(parts) - 1:
+            raise ValidationError(f"Lookup '{parts[i + 1]}' is not permitted in '{path}'.")
 
 
 class ObjectAbsoluteUrlMixin:
@@ -239,7 +243,9 @@ class Metric(ObjectAbsoluteUrlMixin, NetBoxModel):
 
         # Test the labels
         try:
-            model.objects.values(*self.metric_labels)
+            qs = model.objects.values(*self.metric_labels)
+            if self.metric_labels:
+                qs.query.sql_with_params()
         except (FieldError, ValueError, TypeError) as e:
             raise ValidationError({"metric_labels": f"Labels invalid: {e}"})
 
@@ -255,7 +261,8 @@ class Metric(ObjectAbsoluteUrlMixin, NetBoxModel):
                 except ValidationError as e:
                     raise ValidationError({"filter": e.message if hasattr(e, "message") else str(e)})
             try:
-                model.objects.filter(**self.filter)
+                if self.filter:
+                    model.objects.filter(**self.filter).query.sql_with_params()
             except (FieldError, ValueError, TypeError) as e:
                 raise ValidationError({"filter": f"Filter invalid: {e}"})
         else:
@@ -273,7 +280,8 @@ class Metric(ObjectAbsoluteUrlMixin, NetBoxModel):
                 except ValidationError as e:
                     raise ValidationError({"exclude": e.message if hasattr(e, "message") else str(e)})
             try:
-                model.objects.filter(**self.exclude)
+                if self.exclude:
+                    model.objects.exclude(**self.exclude).query.sql_with_params()
             except (FieldError, ValueError, TypeError) as e:
                 raise ValidationError({"exclude": f"Exclude invalid: {e}"})
         else:

@@ -161,7 +161,7 @@ class DynamicMetricCollector(Collector):
     def test_filter(self):
         # Test the filter to make sure it's valid.
         try:
-            self.queryset.filter(**self.filter)
+            self.queryset.filter(**self.filter).query.sql_with_params()
         except (FieldError, ValueError, TypeError):
             logger.exception("Metric '%s' (%s) filter is not valid.", self.name, self.pk)
             return False
@@ -171,7 +171,7 @@ class DynamicMetricCollector(Collector):
     def test_exclude(self):
         # Test the exclude filter to make sure it's valid.
         try:
-            self.queryset.filter(**self.exclude)
+            self.queryset.exclude(**self.exclude).query.sql_with_params()
         except (FieldError, ValueError, TypeError):
             logger.exception("Metric '%s' (%s) exclude is not valid.", self.name, self.pk)
             return False
@@ -181,7 +181,9 @@ class DynamicMetricCollector(Collector):
     def test_labels(self):
         # Test the labels make sure they're valid.
         try:
-            self.queryset.values(*self.labels.keys())
+            qs = self.queryset.values(*self.labels.keys())
+            if self.labels:
+                qs.query.sql_with_params()
         except (FieldError, ValueError, TypeError):
             logger.exception("Metric '%s' (%s) labels are invalid.", self.name, self.pk)
             return False

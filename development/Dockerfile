@@ -1,4 +1,4 @@
-ARG NETBOX_VER=v4.5
+ARG NETBOX_VER=v4.7
 FROM netboxcommunity/netbox:${NETBOX_VER}
 
 # Install plugin (supports uv in NetBox v4.2+ and pip in NetBox v4.0-v4.1)
