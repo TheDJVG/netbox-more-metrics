@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.1 (2026-11-16)
+
+### Features & Enhancements
+* Add verified compatibility and CI matrix coverage for NetBox 4.6 & 4.7 (Django 6.0/6.1, Python 3.13/3.14) plus a weekly `latest` canary build
+* Decorate export endpoints with Django's `@login_not_required` for forward-compatibility with NetBox 5.0 mandatory authentication
+* Modernize MkDocs configuration and lock documentation dependencies for GitHub Pages deployments
+
+### Bugfixes
+* Replace removed legacy `actions` dict on `ObjectListView` with `AddObject` (`netbox.object_actions`) for NetBox 4.6/4.7 compatibility
+* Resolve `core.ObjectType` by natural key `(app_label, model)` in `MetricSerializer` rather than assuming `ContentType.pk == ObjectType.pk`
+* Enforce strict `ALLOWED_LOOKUP_TYPES` on scalar fields and eager SQL compilation during validation for Django 6.1 ORM lookups
+
 ## 0.5.0 (2026-11-16)
 
 ### Features & Enhancements

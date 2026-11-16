@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "netbox-more-metrics"
-version = "0.5.0"
+version = "0.5.1"
 description = "Provide customized metrics on data stored in NetBox."
 readme = "README.md"
 license = "MIT"
