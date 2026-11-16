@@ -1,7 +1,9 @@
 from netbox.api.viewsets import NetBoxModelViewSet
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from netbox_more_metrics import filtersets
 from netbox_more_metrics.api.serializers import (
     MetricCollectionSerializer,
     MetricSerializer,
@@ -14,11 +16,13 @@ from netbox_more_metrics.models import Metric, MetricCollection
 class MetricCollectionViewSet(NetBoxModelViewSet):
     queryset = MetricCollection.objects.all()
     serializer_class = MetricCollectionSerializer
+    filterset_class = filtersets.MetricCollectionFilterSet
 
 
 class MetricViewSet(NetBoxModelViewSet):
     queryset = Metric.objects.all()
     serializer_class = MetricSerializer
+    filterset_class = filtersets.MetricFilterSet
 
 
 class MetricValueTypeOptionsViewSet(viewsets.ViewSet):
@@ -26,7 +30,7 @@ class MetricValueTypeOptionsViewSet(viewsets.ViewSet):
     Return valid Metric Value Type for an Object Type.
     """
 
-    permission_classes = []
+    permission_classes = (IsAuthenticated,)
 
     def list(self, request):
         content_type = request.query_params.get("object_type")
@@ -34,7 +38,7 @@ class MetricValueTypeOptionsViewSet(viewsets.ViewSet):
         if content_type:
             choices = MetricValueChoices.choices_for_contenttype(content_type)
 
-        options = list()
+        options = []
         for option in choices:
             value, name = option
             options.append({"id": value, "display": name})

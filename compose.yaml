@@ -6,17 +6,27 @@ services:
     build:
       context: .
       dockerfile: development/Dockerfile
+      args:
+        NETBOX_VER: ${NETBOX_VER:-v4.5}
     depends_on:
-      - postgres
-      - redis
-      - redis-cache
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
     volumes:
       - ./development/configuration/plugins.py:/etc/netbox/config/plugins.py:z,ro
       - ./development/configuration/logging.py:/etc/netbox/config/logging.py:z,ro
       - ./development/demo-data.json:/tmp/demo-data.json:z,ro
       - ./:/source
-    command: >
-      sh -c "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    command:
+      - sh
+      - -c
+      - |
+        python manage.py migrate &&
+        python manage.py collectstatic --noinput &&
+        python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
   # postgres
@@ -25,7 +35,12 @@ services:
     env_file:
       - development/dev.env
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
   # redis
   redis:
     image: redis:8-alpine
@@ -35,6 +50,11 @@ services:
       - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
     env_file:
       - development/dev.env
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping | grep -q PONG"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
   redis-cache:
     image: redis:8-alpine
     command:
@@ -43,5 +63,10 @@ services:
       - redis-server --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
     env_file:
       - development/dev.env
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping | grep -q PONG"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
 volumes:
   postgres-data:

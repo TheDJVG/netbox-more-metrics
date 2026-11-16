@@ -1,5 +1,12 @@
+from typing import ClassVar
+
+from django.conf import settings
+from django.contrib.auth.views import redirect_to_login
+from django.core.exceptions import PermissionDenied
 from django.db.models import F, Func, TextField, Value
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.views.generic import View
 from netbox.plugins import get_plugin_config
 from netbox.views.generic import (
     ObjectDeleteView,
@@ -9,6 +16,7 @@ from netbox.views.generic import (
 )
 from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, generate_latest
 
+from netbox_more_metrics import filtersets
 from netbox_more_metrics.collectors import (
     DynamicMetricCollectionCollector,
     DynamicMetricCollector,
@@ -17,18 +25,29 @@ from netbox_more_metrics.forms import MetricCollectionForm, MetricForm
 from netbox_more_metrics.models import Metric, MetricCollection
 from netbox_more_metrics.tables import MetricCollectionTable, MetricTable
 
+
+class PluginLoginRequiredMixin:
+    """Ensure LOGIN_REQUIRED is enforced on UI views across NetBox 4.0-4.5."""
+
+    def dispatch(self, request, *args, **kwargs):
+        if getattr(settings, "LOGIN_REQUIRED", False) and not request.user.is_authenticated:
+            return redirect_to_login(request.get_full_path())
+        return super().dispatch(request, *args, **kwargs)
+
+
 #
 # MetricCollection
 #
 
 
-class MetricCollectionListView(ObjectListView):
+class MetricCollectionListView(PluginLoginRequiredMixin, ObjectListView):
     queryset = MetricCollection.objects.all()
-    actions = {"add": {"add"}}
+    filterset = filtersets.MetricCollectionFilterSet
+    actions: ClassVar[dict] = {"add": {"add"}}
     table = MetricCollectionTable
 
 
-class MetricCollectionView(ObjectView):
+class MetricCollectionView(PluginLoginRequiredMixin, ObjectView):
     queryset = MetricCollection.objects.all()
 
     def get_extra_context(self, request, instance):
@@ -48,18 +67,31 @@ class MetricCollectionView(ObjectView):
         return {"metrics_table": metrics_table}
 
 
-class MetricCollectionExportView(ObjectView):
-    queryset = MetricCollection.objects.all()
+class MetricCollectionExportView(View):
     http_method_names = ("get",)
 
-    def has_permission(self):
+    def has_permission(self, request=None):
+        req = request or getattr(self, "request", None)
         if get_plugin_config("netbox_more_metrics", "export_metrics_without_auth"):
             return True
+        if req is None or not req.user.is_authenticated:
+            return False
+        return req.user.has_perm("netbox_more_metrics.view_metriccollection")
 
-        return super().has_permission()
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        if not self.has_permission(request):
+            raise PermissionDenied("Authentication and view permission required to export metrics.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, **kwargs):
-        instance = self.get_object(**kwargs)
+        if get_plugin_config("netbox_more_metrics", "export_metrics_without_auth"):
+            instance = get_object_or_404(MetricCollection, pk=kwargs["pk"])
+        else:
+            instance = get_object_or_404(
+                MetricCollection.objects.restrict(request.user, "view"),
+                pk=kwargs["pk"],
+            )
 
         registry = CollectorRegistry()
         DynamicMetricCollectionCollector(registry=registry, collection=instance)
@@ -83,7 +115,7 @@ class MetricCollectionDeleteView(ObjectDeleteView):
 #
 
 
-class MetricListView(ObjectListView):
+class MetricListView(PluginLoginRequiredMixin, ObjectListView):
     queryset = Metric.objects.all().annotate(
         labels=Func(
             F("metric_labels"),
@@ -92,11 +124,12 @@ class MetricListView(ObjectListView):
             output_field=TextField(),
         )
     )
-    actions = {"add": {"add"}}
+    filterset = filtersets.MetricFilterSet
+    actions: ClassVar[dict] = {"add": {"add"}}
     table = MetricTable
 
 
-class MetricView(ObjectView):
+class MetricView(PluginLoginRequiredMixin, ObjectView):
     queryset = Metric.objects.all()
 
     def get_extra_context(self, request, instance):
@@ -117,18 +150,31 @@ class MetricView(ObjectView):
         }
 
 
-class MetricExportView(ObjectView):
-    queryset = Metric.objects.all()
+class MetricExportView(View):
     http_method_names = ("get",)
 
-    def has_permission(self):
+    def has_permission(self, request=None):
+        req = request or getattr(self, "request", None)
         if get_plugin_config("netbox_more_metrics", "export_metrics_without_auth"):
             return True
+        if req is None or not req.user.is_authenticated:
+            return False
+        return req.user.has_perm("netbox_more_metrics.view_metric")
 
-        return super().has_permission()
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        if not self.has_permission(request):
+            raise PermissionDenied("Authentication and view permission required to export metrics.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, **kwargs):
-        instance = self.get_object(**kwargs)
+        if get_plugin_config("netbox_more_metrics", "export_metrics_without_auth"):
+            instance = get_object_or_404(Metric, pk=kwargs["pk"])
+        else:
+            instance = get_object_or_404(
+                Metric.objects.restrict(request.user, "view"),
+                pk=kwargs["pk"],
+            )
 
         registry = CollectorRegistry()
         DynamicMetricCollector(registry=registry, metric=instance)

@@ -8,9 +8,8 @@ from netbox_more_metrics.choices import MetricValueChoices
 class DynamicMetricValueOptionField(forms.ChoiceField):
     widget = APISelect
 
-    def __init__(self, query_params=None, object_type_field=None, *args, **kwargs):
+    def __init__(self, query_params=None, *args, **kwargs):
         self.query_params = query_params or {}
-        self.object_type_field = object_type_field
 
         # These are always valid and should be the default.
         kwargs["choices"] = MetricValueChoices.DEFAULT_CHOICES
@@ -26,8 +25,6 @@ class DynamicMetricValueOptionField(forms.ChoiceField):
         if len(self.query_params) > 0:
             widget.add_query_params(self.query_params)
 
-        widget.attrs["data-url"] = reverse(
-            "plugins-api:netbox_more_metrics-api:metric_value_type_options-list"
-        )
+        widget.attrs["data-url"] = reverse("plugins-api:netbox_more_metrics-api:metric_value_type_options-list")
 
         return bound_field

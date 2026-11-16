@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.5.0 (2026-11-16)
+
+### Features & Enhancements
+* [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Add `FilterSet` classes and global NetBox `SearchIndex` integration for `Metric` and `MetricCollection`
+* [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Expand REST API serializers with standard NetBox model fields (`description`, `tags`, `custom_fields`, `created`, `last_updated`, `display_url`) and NetBox 4.x `ObjectType` write support
+* [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Harden ORM/API security boundaries against sensitive model traversal, ReDoS regex lookups, and unauthenticated option queries
+* [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Optimize `/metrics` scrape queries by reconciling enabled collectors in a single prefetched pass
+* [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Migrate packaging to PEP 621, add automated test suite, and configure GitHub Actions CI matrix across NetBox 4.x
+
+### Bugfixes
+* [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Fix `export_metrics_without_auth` redirecting to login or returning 404 when `LOGIN_REQUIRED=True`
+* [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Fix duplicate collector registration crashes on counters ending in `_total` and info metrics ending in `_info`
+* [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Prevent disabled `MetricCollection` endpoints from exporting metrics shared with enabled collections
+* [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Fix `IPAddress` count grouping, empty-labelset count aggregation, utilization series deduplication, and `0U` rack zero-division handling
+* [PR#47](https://github.com/TheDJVG/netbox-more-metrics/pull/47) - Restore `tags` field on `MetricForm`, align metric/label validators with the Prometheus specification, and display human-readable `metric_value` labels in the UI
+
 ## 0.4.0 (2026-01-12)
 
 First release for 0.4.0.
