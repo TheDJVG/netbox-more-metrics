@@ -20,13 +20,14 @@ theme:
     - navigation.tabs.sticky
 markdown_extensions:
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.critic
   - pymdownx.caret
   - pymdownx.mark
   - pymdownx.tilde
-  - pymdownx.tabbed
+  - pymdownx.tabbed:
+      alternate_style: true
   - attr_list
   - pymdownx.arithmatex:
       generic: true
@@ -39,15 +40,20 @@ markdown_extensions:
   - toc:
       baselevel: 2
       permalink: true
-      slugify: !!python/name:pymdownx.slugs.uslugify
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
   - meta
 plugins:
-  - include-markdown
+  - include-markdown:
+      rewrite_relative_urls: true
   - search:
       lang: en
   - mkdocstrings:
-      watch:
-        - "netbox_more_metrics"
+      handlers:
+        python:
+          paths:
+            - "."
 extra:
   social:
     - icon: fontawesome/brands/github
