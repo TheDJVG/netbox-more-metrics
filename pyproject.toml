@@ -41,6 +41,11 @@ test = [
     "pytest>=7.4.0",
     "pytest-django>=4.5.2",
 ]
+docs = [
+    "mkdocs-material>=9.5.0,<10.0.0",
+    "mkdocs-include-markdown-plugin>=7.0.0",
+    "mkdocstrings-python>=1.10.0",
+]
 
 [tool.poetry]
 packages = [{include = "netbox_more_metrics"}]
