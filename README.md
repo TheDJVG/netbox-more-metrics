@@ -7,7 +7,8 @@ Create custom metrics and export information from NetBox into your timeseries da
 | NetBox Version | Plugin Version      |
 |----------------|---------------------|
 | 3.4 <= 3.7     | 0.1.X, 0.2.X        |
-| 4.0 <= 4.5     | 0.3.X, 0.4.X, 0.5.X |
+| 4.0 <= 4.5     | 0.3.X, 0.4.X        |
+| 4.0 <= 4.7     | 0.5.X               |
 
 ## Installing
 
@@ -103,14 +104,14 @@ make start
 Run the automated test suite inside the NetBox container:
 
 ```bash
-docker compose run --rm netbox ./manage.py test netbox_more_metrics
+docker compose run --rm -e DEBUG=False netbox ./manage.py test netbox_more_metrics
 ```
 
-To build and test against a specific NetBox 4.x version (e.g. `v4.2` or `v4.5`):
+To build and test against a specific NetBox 4.x version (e.g. `v4.2` or `v4.7`):
 
 ```bash
-NETBOX_VER=v4.5 docker compose build --build-arg NETBOX_VER=v4.5 netbox
-NETBOX_VER=v4.5 docker compose run --rm netbox ./manage.py test netbox_more_metrics
+NETBOX_VER=v4.7 docker compose build --build-arg NETBOX_VER=v4.7 netbox
+NETBOX_VER=v4.7 docker compose run --rm -e DEBUG=False netbox ./manage.py test netbox_more_metrics
 ```
 
 See [docs/netbox_upgrade_strategy.md](docs/netbox_upgrade_strategy.md) for details on CI matrix testing and maintaining compatibility with future NetBox releases.

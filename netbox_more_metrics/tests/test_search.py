@@ -28,6 +28,9 @@ class SearchIndexBaseTestCase(TestCase):
             metric_labels=["name"],
             enabled=True,
         )
+        # NetBox 4.7+ defers search indexing via transaction.on_commit; populate cache explicitly in setUpTestData.
+        search_backend.cache([cls.collection])
+        search_backend.cache([cls.metric])
 
 
 # =====================================================================

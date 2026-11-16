@@ -144,8 +144,10 @@ class MetricSerializer(NetBoxModelSerializer):
             or f"{value.app_label}.{value.model}".lower() in SENSITIVE_MODEL_NAMES
         ):
             raise serializers.ValidationError(f"Access to sensitive model '{value}' is forbidden.")
+        if isinstance(value, ObjectType):
+            return value
         try:
-            return ObjectType.objects.get(pk=value.pk)
+            return ObjectType.objects.get_by_natural_key(value.app_label, value.model)
         except ObjectType.DoesNotExist:
             raise serializers.ValidationError(f"ObjectType for '{value}' not found.")
 
