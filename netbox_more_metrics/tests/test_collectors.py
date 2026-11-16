@@ -49,8 +49,9 @@ class CollectorBaseTestCase(TestCase):
 
         cls.rir = RIR.objects.create(name="RFC 1918", slug="rfc-1918")
         cls.aggregate = Aggregate.objects.create(prefix="10.0.0.0/8", rir=cls.rir)
-        cls.prefix1 = Prefix.objects.create(prefix="10.1.0.0/24", scope=cls.site)
-        cls.prefix2 = Prefix.objects.create(prefix="10.2.0.0/24", scope=cls.site)
+        prefix_site_kwarg = {"scope": cls.site} if hasattr(Prefix, "scope") else {"site": cls.site}
+        cls.prefix1 = Prefix.objects.create(prefix="10.1.0.0/24", **prefix_site_kwarg)
+        cls.prefix2 = Prefix.objects.create(prefix="10.2.0.0/24", **prefix_site_kwarg)
 
 
 # ---------------------------------------------------------------------

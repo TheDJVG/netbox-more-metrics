@@ -1,5 +1,7 @@
 from typing import ClassVar
 
+from django.conf import settings
+from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 from django.db.models import F, Func, TextField, Value
 from django.http import HttpResponse
@@ -23,19 +25,29 @@ from netbox_more_metrics.forms import MetricCollectionForm, MetricForm
 from netbox_more_metrics.models import Metric, MetricCollection
 from netbox_more_metrics.tables import MetricCollectionTable, MetricTable
 
+
+class PluginLoginRequiredMixin:
+    """Ensure LOGIN_REQUIRED is enforced on UI views across NetBox 4.0-4.5."""
+
+    def dispatch(self, request, *args, **kwargs):
+        if getattr(settings, "LOGIN_REQUIRED", False) and not request.user.is_authenticated:
+            return redirect_to_login(request.get_full_path())
+        return super().dispatch(request, *args, **kwargs)
+
+
 #
 # MetricCollection
 #
 
 
-class MetricCollectionListView(ObjectListView):
+class MetricCollectionListView(PluginLoginRequiredMixin, ObjectListView):
     queryset = MetricCollection.objects.all()
     filterset = filtersets.MetricCollectionFilterSet
     actions: ClassVar[dict] = {"add": {"add"}}
     table = MetricCollectionTable
 
 
-class MetricCollectionView(ObjectView):
+class MetricCollectionView(PluginLoginRequiredMixin, ObjectView):
     queryset = MetricCollection.objects.all()
 
     def get_extra_context(self, request, instance):
@@ -103,7 +115,7 @@ class MetricCollectionDeleteView(ObjectDeleteView):
 #
 
 
-class MetricListView(ObjectListView):
+class MetricListView(PluginLoginRequiredMixin, ObjectListView):
     queryset = Metric.objects.all().annotate(
         labels=Func(
             F("metric_labels"),
@@ -117,7 +129,7 @@ class MetricListView(ObjectListView):
     table = MetricTable
 
 
-class MetricView(ObjectView):
+class MetricView(PluginLoginRequiredMixin, ObjectView):
     queryset = Metric.objects.all()
 
     def get_extra_context(self, request, instance):

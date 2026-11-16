@@ -261,8 +261,10 @@ class RealWorldScenario2IPAMTestCase(TestCase):
         self.rir = RIR.objects.create(name="RFC 1918", slug="rfc-1918")
         self.aggregate = Aggregate.objects.create(prefix="10.0.0.0/8", rir=self.rir)
 
-        self.p1 = Prefix.objects.create(prefix="10.1.0.0/24", scope=self.site_ams)
-        self.p2 = Prefix.objects.create(prefix="10.2.0.0/24", scope=self.site_fra)
+        p1_site = {"scope": self.site_ams} if hasattr(Prefix, "scope") else {"site": self.site_ams}
+        p2_site = {"scope": self.site_fra} if hasattr(Prefix, "scope") else {"site": self.site_fra}
+        self.p1 = Prefix.objects.create(prefix="10.1.0.0/24", **p1_site)
+        self.p2 = Prefix.objects.create(prefix="10.2.0.0/24", **p2_site)
 
         for i in range(1, 5):
             IPAddress.objects.create(address=f"10.1.0.{i}/24", status="active")

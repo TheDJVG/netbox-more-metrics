@@ -14,9 +14,13 @@ from netbox_more_metrics.models import (
     get_allowed_object_types,
 )
 
+_HAS_DISPLAY_URL = "display_url" in NetBoxModelSerializer._declared_fields
+
 
 class NestedMetricSerializer(WritableNestedSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="plugins-api:netbox_more_metrics-api:metric-detail")
+    if not _HAS_DISPLAY_URL:
+        display_url = serializers.HyperlinkedIdentityField(view_name="plugins:netbox_more_metrics:metric")
 
     class Meta:
         model = Metric
@@ -33,6 +37,8 @@ class NestedMetricSerializer(WritableNestedSerializer):
 
 class NestedMetricCollectionSerializer(WritableNestedSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="plugins-api:netbox_more_metrics-api:metriccollection-detail")
+    if not _HAS_DISPLAY_URL:
+        display_url = serializers.HyperlinkedIdentityField(view_name="plugins:netbox_more_metrics:metriccollection")
 
     class Meta:
         model = MetricCollection
@@ -48,6 +54,8 @@ class NestedMetricCollectionSerializer(WritableNestedSerializer):
 
 class MetricCollectionSerializer(NetBoxModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="plugins-api:netbox_more_metrics-api:metriccollection-detail")
+    if not _HAS_DISPLAY_URL:
+        display_url = serializers.HyperlinkedIdentityField(view_name="plugins:netbox_more_metrics:metriccollection")
     export_url = serializers.HyperlinkedIdentityField(view_name="plugins:netbox_more_metrics:metriccollection_metrics")
     metrics = NestedMetricSerializer(many=True, read_only=True)
     metric_count = RelatedObjectCountField("metrics")
@@ -82,6 +90,8 @@ class MetricCollectionSerializer(NetBoxModelSerializer):
 
 class MetricSerializer(NetBoxModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="plugins-api:netbox_more_metrics-api:metric-detail")
+    if not _HAS_DISPLAY_URL:
+        display_url = serializers.HyperlinkedIdentityField(view_name="plugins:netbox_more_metrics:metric")
     export_url = serializers.HyperlinkedIdentityField(view_name="plugins:netbox_more_metrics:metric_metrics")
     content_type = ContentTypeField(queryset=get_allowed_object_types())
     collections = SerializedPKRelatedField(
