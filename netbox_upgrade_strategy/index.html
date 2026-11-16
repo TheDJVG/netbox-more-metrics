@@ -1,0 +1,2433 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://thedjvg.github.io/netbox-more-metrics/netbox_upgrade_strategy/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../changelog/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Upgrade Strategy - netbox-more-metrics</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#long-term-netbox-upgrade-and-maintenance-strategy-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="netbox-more-metrics" class="md-header__button md-logo" aria-label="netbox-more-metrics" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            netbox-more-metrics
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Upgrade Strategy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/TheDJVG/netbox-more-metrics" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    TheDJVG/netbox-more-metrics
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="netbox-more-metrics" class="md-nav__button md-logo" aria-label="netbox-more-metrics" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    netbox-more-metrics
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/TheDJVG/netbox-more-metrics" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    TheDJVG/netbox-more-metrics
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrade Strategy
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrade Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#long-term-netbox-upgrade-and-maintenance-strategy-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Long-Term NetBox Upgrade and Maintenance Strategy Guide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Long-Term NetBox Upgrade and Maintenance Strategy Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-document-overview--guiding-architecture-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Document Overview &amp; Guiding Architecture Principles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Document Overview &amp; Guiding Architecture Principles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-purpose-and-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Purpose and Scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-guiding-engineering-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Guiding Engineering Principles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-netbox--dependency-version-support-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 NetBox &amp; Dependency Version Support Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-upstream-netbox-release-tracking--monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Upstream NetBox Release Tracking &amp; Monitoring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Upstream NetBox Release Tracking &amp; Monitoring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-upstream-release-lifecycle--deprecation-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Upstream Release Lifecycle &amp; Deprecation Policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-monitoring-channels--feeds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Monitoring Channels &amp; Feeds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-automated-upstream-canary-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Automated Upstream Canary Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-pre-release-testing-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Pre-Release Testing Protocol
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-framework-deprecation--lifecycle-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Framework Deprecation &amp; Lifecycle Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Framework Deprecation &amp; Lifecycle Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-django-upgrade-cycles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Django Upgrade Cycles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-netbox-core-model--objecttype-abstractions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 NetBox Core Model &amp; ObjectType Abstractions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-netbox-plugin-framework-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 NetBox Plugin Framework Evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-netbox-filtersets-searchindex-and-tables-modernization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 NetBox FilterSets, SearchIndex, and Tables Modernization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-django-rest-framework-drf--api-serializer-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Django REST Framework (DRF) &amp; API Serializer Compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-ui-templates--frontend-asset-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 UI Templates &amp; Frontend Asset Evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-safe-database-migration-architecture--rollout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Safe Database Migration Architecture &amp; Rollout
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Safe Database Migration Architecture &amp; Rollout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-database-migration-hygiene--ci-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Database Migration Hygiene &amp; CI Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-the-leaf-migration-dependency-pitfall--manual-dependency-pinning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 The "Leaf Migration Dependency" Pitfall &amp; Manual Dependency Pinning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 The &#34;Leaf Migration Dependency&#34; Pitfall &amp; Manual Dependency Pinning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remediation-protocol-manual-dependency-pinning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remediation Protocol: Manual Dependency Pinning
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-safe-schema-evolution--preserving-user-configurations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Safe Schema Evolution &amp; Preserving User Configurations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-multi-phase-field-deprecation--data-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Multi-Phase Field Deprecation &amp; Data Migrations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-migration-reversibility-testing--postgresql-specifics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Migration Reversibility Testing &amp; PostgreSQL Specifics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-dynamic-collector-compatibility--prometheus-exposition-stability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Dynamic Collector Compatibility &amp; Prometheus Exposition Stability
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Dynamic Collector Compatibility &amp; Prometheus Exposition Stability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-dynamic-collector-architecture-overview--scrape-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Dynamic Collector Architecture Overview &amp; Scrape Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-upstream-model--method-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Upstream Model &amp; Method Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-fail-soft-error-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Fail-Soft Error Isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-relational-label-sanitization--postgresql-json-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Relational Label Sanitization &amp; PostgreSQL JSON Extraction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-prometheus-client-library-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 Prometheus Client Library Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-zero-cost-github-actions-cicd-maintenance-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Zero-Cost GitHub Actions CI/CD Maintenance Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Zero-Cost GitHub Actions CI/CD Maintenance Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-github-hosted-runner-economics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 GitHub-Hosted Runner Economics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-native-service-container-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Native Service Container Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-aggressive-multi-tier-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Aggressive Multi-Tier Caching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-matrix-execution-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Matrix Execution Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-canary-cron--automated-issue-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Canary Cron &amp; Automated Issue Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-step-by-step-minor-upgrade-procedure-netbox-4x--4y" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Step-by-Step Minor Upgrade Procedure (NetBox 4.x &rarr; 4.y)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Step-by-Step Minor Upgrade Procedure (NetBox 4.x → 4.y)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-pre-upgrade-upstream-reconnaissance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Pre-Upgrade Upstream Reconnaissance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-local-docker-development--test-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Local Docker Development &amp; Test Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-migration-dependency-audit--makemigrations-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Migration Dependency Audit &amp; makemigrations Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-ci-matrix-update--verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4: CI Matrix Update &amp; Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-version-bump-changelog-and-release-tagging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5: Version Bump, Changelog, and Release Tagging
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-step-by-step-major-upgrade-playbook-netbox-4x--5x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Step-by-Step Major Upgrade Playbook (NetBox 4.x &rarr; 5.x)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Step-by-Step Major Upgrade Playbook (NetBox 4.x → 5.x)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-breaking-changes--deprecation-removal-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Breaking Changes &amp; Deprecation Removal Audit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-platform-version-bumps-python-django-poetry-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Platform Version Bumps (Python, Django, Poetry dependencies)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-core-framework-shims--model-traversal-adaptations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Core Framework Shims &amp; Model Traversal Adaptations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-migration-path--data-transformation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4: Migration Path &amp; Data Transformation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-pluginconfig-boundary-update--e2e-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5: PluginConfig Boundary Update &amp; E2E Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-troubleshooting-rollback-and-emergency-response-runbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Troubleshooting, Rollback, and Emergency Response Runbook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Troubleshooting, Rollback, and Emergency Response Runbook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-scrape-500-internal-server-errors--scrape-timeout-remediation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Scrape 500 Internal Server Errors &amp; Scrape Timeout Remediation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-migration-conflict--nodenotfounderror-invalidation--resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Migration Conflict / NodeNotFoundError Invalidation &amp; Resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-registry-collision--duplicate-timeseries-triage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 Registry Collision &amp; Duplicate Timeseries Triage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-emergency-patching--rollback-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 Emergency Patching &amp; Rollback Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#appendix-a-diagnostic-commands-quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix A: Diagnostic Commands Quick Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#appendix-b-migration-dependency-inspection-cheat-sheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix B: Migration Dependency Inspection Cheat Sheet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#long-term-netbox-upgrade-and-maintenance-strategy-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Long-Term NetBox Upgrade and Maintenance Strategy Guide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Long-Term NetBox Upgrade and Maintenance Strategy Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-document-overview--guiding-architecture-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Document Overview &amp; Guiding Architecture Principles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Document Overview &amp; Guiding Architecture Principles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-purpose-and-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Purpose and Scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-guiding-engineering-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Guiding Engineering Principles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-netbox--dependency-version-support-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 NetBox &amp; Dependency Version Support Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-upstream-netbox-release-tracking--monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Upstream NetBox Release Tracking &amp; Monitoring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Upstream NetBox Release Tracking &amp; Monitoring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-upstream-release-lifecycle--deprecation-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Upstream Release Lifecycle &amp; Deprecation Policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-monitoring-channels--feeds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Monitoring Channels &amp; Feeds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-automated-upstream-canary-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Automated Upstream Canary Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-pre-release-testing-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Pre-Release Testing Protocol
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-framework-deprecation--lifecycle-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Framework Deprecation &amp; Lifecycle Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Framework Deprecation &amp; Lifecycle Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-django-upgrade-cycles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Django Upgrade Cycles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-netbox-core-model--objecttype-abstractions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 NetBox Core Model &amp; ObjectType Abstractions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-netbox-plugin-framework-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 NetBox Plugin Framework Evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-netbox-filtersets-searchindex-and-tables-modernization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 NetBox FilterSets, SearchIndex, and Tables Modernization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-django-rest-framework-drf--api-serializer-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Django REST Framework (DRF) &amp; API Serializer Compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-ui-templates--frontend-asset-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 UI Templates &amp; Frontend Asset Evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-safe-database-migration-architecture--rollout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Safe Database Migration Architecture &amp; Rollout
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Safe Database Migration Architecture &amp; Rollout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-database-migration-hygiene--ci-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Database Migration Hygiene &amp; CI Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-the-leaf-migration-dependency-pitfall--manual-dependency-pinning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 The "Leaf Migration Dependency" Pitfall &amp; Manual Dependency Pinning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 The &#34;Leaf Migration Dependency&#34; Pitfall &amp; Manual Dependency Pinning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remediation-protocol-manual-dependency-pinning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remediation Protocol: Manual Dependency Pinning
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-safe-schema-evolution--preserving-user-configurations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Safe Schema Evolution &amp; Preserving User Configurations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-multi-phase-field-deprecation--data-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Multi-Phase Field Deprecation &amp; Data Migrations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-migration-reversibility-testing--postgresql-specifics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Migration Reversibility Testing &amp; PostgreSQL Specifics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-dynamic-collector-compatibility--prometheus-exposition-stability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Dynamic Collector Compatibility &amp; Prometheus Exposition Stability
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Dynamic Collector Compatibility &amp; Prometheus Exposition Stability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-dynamic-collector-architecture-overview--scrape-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Dynamic Collector Architecture Overview &amp; Scrape Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-upstream-model--method-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Upstream Model &amp; Method Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-fail-soft-error-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Fail-Soft Error Isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-relational-label-sanitization--postgresql-json-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Relational Label Sanitization &amp; PostgreSQL JSON Extraction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-prometheus-client-library-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 Prometheus Client Library Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-zero-cost-github-actions-cicd-maintenance-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Zero-Cost GitHub Actions CI/CD Maintenance Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Zero-Cost GitHub Actions CI/CD Maintenance Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-github-hosted-runner-economics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 GitHub-Hosted Runner Economics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-native-service-container-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Native Service Container Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-aggressive-multi-tier-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Aggressive Multi-Tier Caching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-matrix-execution-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Matrix Execution Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-canary-cron--automated-issue-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Canary Cron &amp; Automated Issue Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-step-by-step-minor-upgrade-procedure-netbox-4x--4y" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Step-by-Step Minor Upgrade Procedure (NetBox 4.x &rarr; 4.y)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Step-by-Step Minor Upgrade Procedure (NetBox 4.x → 4.y)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-pre-upgrade-upstream-reconnaissance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Pre-Upgrade Upstream Reconnaissance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-local-docker-development--test-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Local Docker Development &amp; Test Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-migration-dependency-audit--makemigrations-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Migration Dependency Audit &amp; makemigrations Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-ci-matrix-update--verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4: CI Matrix Update &amp; Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-version-bump-changelog-and-release-tagging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5: Version Bump, Changelog, and Release Tagging
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-step-by-step-major-upgrade-playbook-netbox-4x--5x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Step-by-Step Major Upgrade Playbook (NetBox 4.x &rarr; 5.x)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Step-by-Step Major Upgrade Playbook (NetBox 4.x → 5.x)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-breaking-changes--deprecation-removal-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Breaking Changes &amp; Deprecation Removal Audit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-platform-version-bumps-python-django-poetry-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Platform Version Bumps (Python, Django, Poetry dependencies)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-core-framework-shims--model-traversal-adaptations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Core Framework Shims &amp; Model Traversal Adaptations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-migration-path--data-transformation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4: Migration Path &amp; Data Transformation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-pluginconfig-boundary-update--e2e-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5: PluginConfig Boundary Update &amp; E2E Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-troubleshooting-rollback-and-emergency-response-runbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Troubleshooting, Rollback, and Emergency Response Runbook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Troubleshooting, Rollback, and Emergency Response Runbook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-scrape-500-internal-server-errors--scrape-timeout-remediation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Scrape 500 Internal Server Errors &amp; Scrape Timeout Remediation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-migration-conflict--nodenotfounderror-invalidation--resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Migration Conflict / NodeNotFoundError Invalidation &amp; Resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-registry-collision--duplicate-timeseries-triage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 Registry Collision &amp; Duplicate Timeseries Triage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-emergency-patching--rollback-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 Emergency Patching &amp; Rollback Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#appendix-a-diagnostic-commands-quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix A: Diagnostic Commands Quick Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#appendix-b-migration-dependency-inspection-cheat-sheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix B: Migration Dependency Inspection Cheat Sheet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Upgrade Strategy</h1>
+
+<h2 id="long-term-netbox-upgrade-and-maintenance-strategy-guide">Long-Term NetBox Upgrade and Maintenance Strategy Guide<a class="headerlink" href="#long-term-netbox-upgrade-and-maintenance-strategy-guide" title="Permanent link">&para;</a></h2>
+<p>This document establishes the official long-term upgrade, compatibility maintenance, and operational lifecycle strategy for the <code>netbox-more-metrics</code> plugin. It is designed as an exhaustive, production-grade guide for maintainers, contributors, and enterprise site reliability engineers managing custom Prometheus metric exports across NetBox minor (4.0 &rarr; 4.1 &rarr; 4.2 &rarr; ...) and major (4.x &rarr; 5.x) version transitions.</p>
+<hr />
+<h3 id="1-document-overview--guiding-architecture-principles">1. Document Overview &amp; Guiding Architecture Principles<a class="headerlink" href="#1-document-overview--guiding-architecture-principles" title="Permanent link">&para;</a></h3>
+<h4 id="11-purpose-and-scope">1.1 Purpose and Scope<a class="headerlink" href="#11-purpose-and-scope" title="Permanent link">&para;</a></h4>
+<p>The <code>netbox-more-metrics</code> plugin bridges the NetBox Network Source of Truth (NSoT) with Prometheus monitoring infrastructure by exposing dynamic database queries as standardized Prometheus exposition metrics. Because the plugin interfaces directly with NetBox internal data models, Django ORM internals, NetBox plugin lifecycle hooks, and Prometheus exposition registries, upstream changes in NetBox core, Django, or Python runtime environments have direct architectural implications.</p>
+<p>This guide provides the protocols, checklists, and technical patterns necessary to guarantee seamless upgrades, eliminate backward-compatibility breaks, and ensure continuous automated testing at zero infrastructure cost.</p>
+<h4 id="12-guiding-engineering-principles">1.2 Guiding Engineering Principles<a class="headerlink" href="#12-guiding-engineering-principles" title="Permanent link">&para;</a></h4>
+<p>All maintenance, feature development, and upstream upgrades must adhere strictly to four core engineering tenets:</p>
+<ol>
+<li><strong>Zero Infrastructure Cost</strong>: Continuous integration and validation workflows must execute entirely on free GitHub-hosted runners (<code>ubuntu-latest</code>) using open-source service containers and native caching. No paid build runners, third-party SaaS CI tiers, or proprietary hosting services are permitted.</li>
+<li><strong>Zero Prometheus Scrape Disruption (Fail-Soft Isolation)</strong>: A single misconfigured metric, database query error, or transient upstream model change must never cause an unhandled HTTP 500 error on <code>/plugins/more-metrics/export/</code> or <code>/metrics</code>. Scrapes must fail-soft: capture exceptions, log diagnostic warnings, and yield healthy metric families without crashing Prometheus scrapers or triggering false-positive alerts.</li>
+<li><strong>Zero Unannounced Breakages (Proactive Cadence Tracking)</strong>: Maintainers must never discover upstream incompatibilities from end-user failure reports. Weekly automated canary pipelines and pre-release testing against NetBox release candidates provide a 3-to-4 week remediation window before upstream general availability (GA).</li>
+<li><strong>Strict Architectural Adherence</strong>: Never introduce monkey-patches, bypass Django migration graphs, or violate NetBox plugin extension patterns. Always leverage official NetBox APIs (<code>NetBoxModel</code>, <code>NetBoxModelFilterSet</code>, <code>SearchIndex</code>, <code>ObjectType</code>, <code>PluginConfig</code>).</li>
+</ol>
+<h4 id="13-netbox--dependency-version-support-matrix">1.3 NetBox &amp; Dependency Version Support Matrix<a class="headerlink" href="#13-netbox--dependency-version-support-matrix" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Minimum Supported</th>
+<th>Active / Tested Target</th>
+<th>Future / Planned Target</th>
+<th>Deprecated / Unsupported</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NetBox Core</strong></td>
+<td><code>4.0.0</code></td>
+<td><code>4.0.x</code>, <code>4.1.x</code>, <code>4.2.x</code>, <code>4.5.x</code></td>
+<td><code>4.6+</code>, <code>5.0.x</code></td>
+<td>NetBox <code>&lt; 3.4</code> (Dropped)</td>
+</tr>
+<tr>
+<td><strong>Python Runtime</strong></td>
+<td><code>3.10</code> (for NetBox 4.0–4.2)</td>
+<td><code>3.11</code>, <code>3.12</code></td>
+<td><code>3.13</code> (upon NetBox adoption)</td>
+<td>Python <code>&lt; 3.10</code> (Dropped)</td>
+</tr>
+<tr>
+<td><strong>Django Framework</strong></td>
+<td><code>5.0</code></td>
+<td><code>5.0.x</code>, <code>5.1.x</code></td>
+<td><code>5.2 LTS</code>, <code>6.0</code></td>
+<td>Django <code>&lt; 4.2</code> (Dropped)</td>
+</tr>
+<tr>
+<td><strong>PostgreSQL Database</strong></td>
+<td><code>14.0</code></td>
+<td><code>15.x</code>, <code>16.x</code>, <code>18-alpine</code> (dev)</td>
+<td><code>17.x+</code></td>
+<td>PostgreSQL <code>&lt; 14</code></td>
+</tr>
+<tr>
+<td><strong>Redis / Valkey</strong></td>
+<td><code>7.0</code></td>
+<td><code>7.x</code>, <code>8.x</code></td>
+<td><code>8.x+</code></td>
+<td>Redis <code>&lt; 7.0</code></td>
+</tr>
+<tr>
+<td><strong><code>prometheus-client</code></strong></td>
+<td><code>0.20.0</code></td>
+<td><code>0.20.0+</code></td>
+<td><code>0.21+</code> / OpenMetrics 1.0</td>
+<td><code>prometheus-client &lt; 0.14</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="2-upstream-netbox-release-tracking--monitoring">2. Upstream NetBox Release Tracking &amp; Monitoring<a class="headerlink" href="#2-upstream-netbox-release-tracking--monitoring" title="Permanent link">&para;</a></h3>
+<h4 id="21-upstream-release-lifecycle--deprecation-policy">2.1 Upstream Release Lifecycle &amp; Deprecation Policy<a class="headerlink" href="#21-upstream-release-lifecycle--deprecation-policy" title="Permanent link">&para;</a></h4>
+<p>Upstream NetBox follows Semantic Versioning (<code>MAJOR.MINOR.PATCH</code>) aligned with a predictable release schedule:
+- <strong>Patch Releases (<code>4.x.Y</code>)</strong>: Released weekly to bi-weekly. Contain bug fixes, security remediations, and performance adjustments. Patch releases strictly preserve backward compatibility for database schemas, models, and public plugin APIs.
+- <strong>Minor Releases (<code>4.X.0</code>)</strong>: Released approximately every four months (typically April, August, and December). Minor releases introduce new features, model changes, and UI improvements.
+- <strong>The "2-Minor Deprecation Rule"</strong>: Upstream NetBox policy dictates that when a core API or pattern is slated for deprecation, it emits <code>DeprecationWarning</code> or <code>PendingDeprecationWarning</code> for at least <strong>two minor releases</strong> before removal. For instance, a feature deprecated in NetBox <code>4.1</code> remains functional with warnings in <code>4.1</code> and <code>4.2</code>, and is only removed in <code>4.3</code> or <code>5.0</code>.
+- <strong>Major Releases (<code>X.0.0</code>)</strong>: Released every 18 to 24 months. Major releases mark significant architectural evolutions (e.g., dropping legacy Django versions, transitioning core model inheritance, or overhauling UI frameworks).</p>
+<h4 id="22-monitoring-channels--feeds">2.2 Monitoring Channels &amp; Feeds<a class="headerlink" href="#22-monitoring-channels--feeds" title="Permanent link">&para;</a></h4>
+<p>Maintainers must track upcoming changes across four primary upstream channels:
+1. <strong>GitHub Releases Feed</strong>: Subscribe to <code>https://github.com/netbox-community/netbox/releases.atom</code> via RSS or GitHub Notifications ("Custom &rarr; Releases").
+2. <strong>Upstream Release Notes</strong>: Consult <code>https://netboxlabs.com/docs/netbox/en/stable/release-notes/</code> prior to every minor release upgrade.
+3. <strong>GitHub Discussions (Feature Requests &amp; Architecture)</strong>: Monitor <code>https://github.com/netbox-community/netbox/discussions/categories/announcements</code> for early notice on major architectural shifts.
+4. <strong>Upstream Commit Stream on <code>develop</code></strong>: Periodically review commits targeting <code>netbox-community/netbox:develop</code> to identify database schema modifications and deprecations months before release.</p>
+<h4 id="23-automated-upstream-canary-workflow">2.3 Automated Upstream Canary Workflow<a class="headerlink" href="#23-automated-upstream-canary-workflow" title="Permanent link">&para;</a></h4>
+<p>To eliminate manual monitoring overhead, an automated canary workflow runs weekly on GitHub Actions. It queries the GitHub REST API for the latest NetBox release tag, verifies whether the tag is currently tested in the CI matrix, and opens an issue if a new minor release is detected.</p>
+<p>The workflow definition (<code>.github/workflows/canary.yml</code> or integrated cron) runs at zero cost on <code>ubuntu-latest</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upstream NetBox Release Canary</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">'0</span><span class="nv"> </span><span class="s">6</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1'</span><span class="w"> </span><span class="c1"># Every Monday at 06:00 UTC</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+
+<span class="nt">concurrency</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">upstream-canary</span>
+<span class="w">  </span><span class="nt">cancel-in-progress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">check-upstream</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check Upstream NetBox Releases</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Fetch Latest NetBox Release</span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get_release</span>
+<span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">GH_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">LATEST_TAG=$(gh api repos/netbox-community/netbox/releases/latest --jq .tag_name)</span>
+<span class="w">          </span><span class="no">echo "latest_tag=${LATEST_TAG}" &gt;&gt; "$GITHUB_OUTPUT"</span>
+<span class="w">          </span><span class="no">echo "Latest upstream NetBox release is: ${LATEST_TAG}"</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check Against Active Support Matrix</span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">verify_matrix</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">LATEST="${{ steps.get_release.outputs.latest_tag }}"</span>
+<span class="w">          </span><span class="no"># Extract major.minor (e.g. v4.5)</span>
+<span class="w">          </span><span class="no">MINOR=$(echo "$LATEST" | grep -oE '^v[0-9]+\.[0-9]+')</span>
+<span class="w">          </span><span class="no">echo "Upstream minor branch: ${MINOR}"</span>
+<span class="w">          </span><span class="no"># Read supported versions from repository configuration</span>
+<span class="w">          </span><span class="no">SUPPORTED="v4.0 v4.1 v4.2 v4.5"</span>
+<span class="w">          </span><span class="no">if [[ ! " ${SUPPORTED} " =~ " ${MINOR} " ]]; then</span>
+<span class="w">            </span><span class="no">echo "new_minor_detected=true" &gt;&gt; "$GITHUB_OUTPUT"</span>
+<span class="w">          </span><span class="no">else</span>
+<span class="w">            </span><span class="no">echo "new_minor_detected=false" &gt;&gt; "$GITHUB_OUTPUT"</span>
+<span class="w">          </span><span class="no">fi</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Open Issue for New Upstream Minor Release</span>
+<span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">steps.verify_matrix.outputs.new_minor_detected == 'true'</span>
+<span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">GH_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">TAG="${{ steps.get_release.outputs.latest_tag }}"</span>
+<span class="w">          </span><span class="no">gh issue create \</span>
+<span class="w">            </span><span class="no">--title "Upstream Compatibility: New NetBox Minor Release ${TAG}" \</span>
+<span class="w">            </span><span class="no">--body "A new upstream NetBox release **${TAG}** has been published. Maintainers must execute the Minor Upgrade Playbook to update the CI matrix and certify plugin compatibility."</span>
+</code></pre></div>
+<h4 id="24-pre-release-testing-protocol">2.4 Pre-Release Testing Protocol<a class="headerlink" href="#24-pre-release-testing-protocol" title="Permanent link">&para;</a></h4>
+<p>Before each NetBox minor release (e.g., <code>4.3.0</code>), the NetBox core team publishes Beta and Release Candidate (RC) builds (e.g., <code>v4.3.0-beta1</code>, <code>v4.3.0-rc1</code>):
+1. <strong>Lead Time</strong>: Beta/RC builds appear 3 to 4 weeks prior to general availability.
+2. <strong>Local RC Verification</strong>: Maintainers test the RC container image locally:
+   <div class="highlight"><pre><span></span><code><span class="nv">NETBOX_VER</span><span class="o">=</span>v4.3.0-rc1<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>build<span class="w"> </span>netbox
+<span class="nv">NETBOX_VER</span><span class="o">=</span>v4.3.0-rc1<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span>makemigrations<span class="w"> </span>--check
+<span class="nv">NETBOX_VER</span><span class="o">=</span>v4.3.0-rc1<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>netbox_more_metrics<span class="w"> </span>--keepdb
+</code></pre></div>
+3. <strong>Deprecation Trapping</strong>: Run test executions with warning escalation to capture upcoming breaks:
+   <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>python<span class="w"> </span>-W<span class="w"> </span>error::DeprecationWarning<span class="w"> </span>./manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>netbox_more_metrics<span class="w"> </span>--keepdb
+</code></pre></div></p>
+<hr />
+<h3 id="3-framework-deprecation--lifecycle-management">3. Framework Deprecation &amp; Lifecycle Management<a class="headerlink" href="#3-framework-deprecation--lifecycle-management" title="Permanent link">&para;</a></h3>
+<h4 id="31-django-upgrade-cycles">3.1 Django Upgrade Cycles<a class="headerlink" href="#31-django-upgrade-cycles" title="Permanent link">&para;</a></h4>
+<p>NetBox tracks modern Django LTS and stable branches. NetBox 4.x runs on Django 5.x; NetBox 5.0 is slated to adopt Django 5.2 LTS or Django 6.0:
+- <strong><code>django.utils.timezone</code></strong>: Avoid deprecated naive datetime comparisons; always use <code>timezone.now()</code> and timezone-aware timestamps for collector scheduling and metric timestamps.
+- <strong>QuerySet Semantics</strong>: Django 5.0+ introduces stricter rules for annotation aliases and grouping. Avoid raw <code>extra()</code> or direct SQL fragment injection.
+- <strong>Escalation Testing</strong>: CI test runs should periodically execute with <code>PYTHONWARNINGS="error::DeprecationWarning"</code> to pinpoint APIs scheduled for removal in future Django releases.</p>
+<h4 id="32-netbox-core-model--objecttype-abstractions">3.2 NetBox Core Model &amp; ObjectType Abstractions<a class="headerlink" href="#32-netbox-core-model--objecttype-abstractions" title="Permanent link">&para;</a></h4>
+<p>NetBox 4.0 replaced Django's generic <code>django.contrib.contenttypes.models.ContentType</code> with <code>core.models.ObjectType</code>:
+- <strong>Model References</strong>: <code>Metric.content_type</code> points to <code>core.ObjectType</code>. All dynamic queries querying available object types must filter via <code>ObjectType.objects.public()</code> or exclude sensitive apps:
+  <div class="highlight"><pre><span></span><code><span class="n">SENSITIVE_APP_LABELS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"users"</span><span class="p">,</span>
+    <span class="s2">"auth"</span><span class="p">,</span>
+    <span class="s2">"contenttypes"</span><span class="p">,</span>
+    <span class="s2">"sessions"</span><span class="p">,</span>
+    <span class="s2">"admin"</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+- <strong>Relational Field Path Traversal</strong>: In <code>netbox_more_metrics/models.py</code>, <code>validate_field_path()</code> traverses relational lookups using Django <code>_meta.get_field()</code>. When NetBox renames models or replaces relations (e.g., converting foreign keys to generic relations), maintainers must verify that <code>_meta.get_field(part).related_model</code> correctly resolves the destination model without leaking private attributes or throwing unhandled <code>FieldDoesNotExist</code> exceptions.</p>
+<h4 id="33-netbox-plugin-framework-evolution">3.3 NetBox Plugin Framework Evolution<a class="headerlink" href="#33-netbox-plugin-framework-evolution" title="Permanent link">&para;</a></h4>
+<p>The plugin configuration class (<code>netbox_more_metrics/__init__.py:NetBoxMoreMetricsConfig</code>) defines the plugin's operational boundaries:
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">NetBoxMoreMetricsConfig</span><span class="p">(</span><span class="n">PluginConfig</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">"netbox_more_metrics"</span>
+    <span class="n">verbose_name</span> <span class="o">=</span> <span class="s2">"More Metrics"</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Export custom metrics from NetBox data."</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">"0.4.1"</span>
+    <span class="n">min_version</span> <span class="o">=</span> <span class="s2">"4.0.0"</span>
+    <span class="n">max_version</span> <span class="o">=</span> <span class="s2">"4.99.9"</span>
+    <span class="n">author</span> <span class="o">=</span> <span class="s2">"Daan van Gorkum"</span>
+    <span class="n">author_email</span> <span class="o">=</span> <span class="s2">"me+netbox@dj.vg"</span>
+    <span class="n">base_url</span> <span class="o">=</span> <span class="s2">"more-metrics"</span>
+    <span class="n">default_settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"export_metrics_without_auth"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">}</span>
+</code></pre></div>
+- <strong><code>min_version</code></strong>: Set to <code>"4.0.0"</code>. Never lower this below 4.0 because legacy NetBox 3.x support has been completely dropped.
+- <strong><code>max_version</code></strong>: Pin to <code>"4.99.9"</code>. This prevents end-users from installing the plugin on uncertified NetBox 5.x major versions where breaking core changes could cause system instability.
+- <strong><code>ready()</code> Lifecycle</strong>: Keep <code>ready()</code> fast and non-blocking. Database queries in <code>ready()</code> must be wrapped in <code>try/except (OperationalError, ProgrammingError)</code> to ensure management commands like <code>migrate</code> or <code>collectstatic</code> can execute during initial database provisioning.</p>
+<h4 id="34-netbox-filtersets-searchindex-and-tables-modernization">3.4 NetBox FilterSets, SearchIndex, and Tables Modernization<a class="headerlink" href="#34-netbox-filtersets-searchindex-and-tables-modernization" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong><code>FilterSet</code> Standards</strong>: Subclass <code>netbox.filtersets.NetBoxModelFilterSet</code>. Ensure all custom models (<code>MetricCollection</code>, <code>Metric</code>) implement filter parameters for standard attributes (<code>q</code>, <code>name</code>, <code>enabled</code>, <code>tags</code>).</li>
+<li><strong><code>SearchIndex</code> Standards</strong>: Register all user-facing models using <code>netbox.search.SearchIndex</code> and <code>register_search()</code>. Assign weighted relevance (<code>1000</code> for primary identifiers like <code>name</code>, <code>2000</code> for metric identifiers like <code>metric_name</code>).</li>
+<li><strong><code>Table</code> Classes</strong>: Subclass <code>netbox.tables.NetBoxTable</code>. Ensure table actions, column selections, and tag badges utilize standard NetBox UI components.</li>
+</ul>
+<h4 id="35-django-rest-framework-drf--api-serializer-compatibility">3.5 Django REST Framework (DRF) &amp; API Serializer Compatibility<a class="headerlink" href="#35-django-rest-framework-drf--api-serializer-compatibility" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Model Serializers</strong>: Subclass <code>netbox.api.serializers.NetBoxModelSerializer</code>.</li>
+<li><strong>Mandatory Audit Fields</strong>: Always include standard audit attributes: <code>id</code>, <code>url</code>, <code>display</code>, <code>name</code>, <code>description</code>, <code>tags</code>, <code>custom_fields</code>, <code>created</code>, <code>last_updated</code>.</li>
+<li><strong>Brief Serializers</strong>: Subclass <code>netbox.api.serializers.NestedGroupModelSerializer</code> or <code>WritableNestedSerializer</code> providing lightweight representations (<code>id</code>, <code>url</code>, <code>display</code>, <code>name</code>) for nested relational serialization.</li>
+<li><strong>Authentication &amp; ViewSet Permissions</strong>: Ensure all viewsets enforce <code>NetBoxModelViewSet</code> permission classes. Never set <code>permission_classes = []</code> on operational endpoints.</li>
+</ul>
+<h4 id="36-ui-templates--frontend-asset-evolution">3.6 UI Templates &amp; Frontend Asset Evolution<a class="headerlink" href="#36-ui-templates--frontend-asset-evolution" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Template Inheritance</strong>: Extend official NetBox templates:</li>
+<li>Detail views: <code>{% extends 'generic/object.html' %}</code></li>
+<li>List views: <code>{% extends 'generic/object_list.html' %}</code></li>
+<li>Edit/Create views: <code>{% extends 'generic/object_edit.html' %}</code></li>
+<li><strong>HTMX &amp; Bootstrap 5</strong>: NetBox 4.x utilizes Bootstrap 5 and HTMX. Avoid bundling separate heavy JavaScript dependencies (e.g., jQuery, Vue, React). Use native HTML5 data attributes and NetBox CSS helper classes.</li>
+</ul>
+<hr />
+<h3 id="4-safe-database-migration-architecture--rollout">4. Safe Database Migration Architecture &amp; Rollout<a class="headerlink" href="#4-safe-database-migration-architecture--rollout" title="Permanent link">&para;</a></h3>
+<h4 id="41-database-migration-hygiene--ci-validation">4.1 Database Migration Hygiene &amp; CI Validation<a class="headerlink" href="#41-database-migration-hygiene--ci-validation" title="Permanent link">&para;</a></h4>
+<p>Database migrations are the most critical aspect of plugin upgrade safety. An unmigrated model modification or invalid migration dependency can prevent NetBox from starting or corrupt production database schemas.
+- <strong>Strict Migration Immutability</strong>: Once a migration file (e.g., <code>0001</code> through <code>0008</code>) is merged into the default branch or published in a release, it is <strong>permanently immutable</strong>. Never alter, re-generate, or delete existing migration files.
+- <strong>Mandatory CI Gate</strong>: Every CI build executes:
+  <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span>makemigrations<span class="w"> </span>--check
+</code></pre></div>
+  This command fails with a non-zero exit code if any model change was made without generating a matching migration file.</p>
+<h4 id="42-the-leaf-migration-dependency-pitfall--manual-dependency-pinning">4.2 The "Leaf Migration Dependency" Pitfall &amp; Manual Dependency Pinning<a class="headerlink" href="#42-the-leaf-migration-dependency-pitfall--manual-dependency-pinning" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p><strong>CRITICAL ARCHITECTURAL WARNING: THE LEAF-MIGRATION DEPENDENCY TRAP</strong></p>
+<p>When developers execute <code>./manage.py makemigrations netbox_more_metrics</code> inside a modern development environment (e.g., NetBox 4.5), Django inspects all foreign keys pointing to external apps (such as <code>core.ObjectType</code>). By default, Django automatically sets the dependency of the new migration to the <strong>current leaf migration</strong> of the target app.</p>
+<p>In NetBox 4.5, the leaf migration for <code>core</code> is <code>0021_job_queue_name</code>.</p>
+<p>If the newly generated plugin migration contains:
+<div class="highlight"><pre><span></span><code><span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">'core'</span><span class="p">,</span> <span class="s1">'0021_job_queue_name'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'netbox_more_metrics'</span><span class="p">,</span> <span class="s1">'0007_metric_exclude'</span><span class="p">),</span>
+<span class="p">]</span>
+</code></pre></div>
+Then any user running NetBox 4.0, 4.1, 4.2, 4.3, or 4.4 who upgrades or installs the plugin will experience an immediate crash during <code>python manage.py migrate</code>:
+<div class="highlight"><pre><span></span><code>django.db.migrations.exceptions.NodeNotFoundError: Migration netbox_more_metrics.0008_...
+dependencies reference nonexistent parent node ('core', '0021_job_queue_name')
+</code></pre></div>
+Because <code>core.0021</code> does not exist in earlier NetBox 4.x releases, the entire upgrade aborts.</p>
+</blockquote>
+<h5 id="remediation-protocol-manual-dependency-pinning">Remediation Protocol: Manual Dependency Pinning<a class="headerlink" href="#remediation-protocol-manual-dependency-pinning" title="Permanent link">&para;</a></h5>
+<p>Whenever <code>makemigrations</code> creates a new migration file:
+1. Open the generated file in <code>netbox_more_metrics/migrations/</code>.
+2. Inspect the <code>dependencies</code> list.
+3. Identify dependencies on upstream NetBox core apps (<code>core</code>, <code>dcim</code>, <code>ipam</code>, <code>extras</code>).
+4. Pin the dependency to the <strong>earliest migration</strong> that introduced the required model or field, rather than the latest leaf migration.
+   - For <code>core.ObjectType</code>, model proxying was introduced in <code>('core', '0008_contenttype_proxy')</code> and stabilized in <code>('core', '0010_gfk_indexes')</code> or <code>('core', '0018_concrete_objecttype')</code>.
+   - Update the dependency to reference the lowest common denominator present across all supported versions (<code>v4.0+</code>):
+     <div class="highlight"><pre><span></span><code><span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">'core'</span><span class="p">,</span> <span class="s1">'0008_contenttype_proxy'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'netbox_more_metrics'</span><span class="p">,</span> <span class="s1">'0007_metric_exclude'</span><span class="p">),</span>
+<span class="p">]</span>
+</code></pre></div>
+5. Test the migration across the CI version matrix (<code>v4.0</code>, <code>v4.1</code>, <code>v4.2</code>, <code>v4.5</code>) to verify that all versions can resolve the migration dependency graph.</p>
+<h4 id="43-safe-schema-evolution--preserving-user-configurations">4.3 Safe Schema Evolution &amp; Preserving User Configurations<a class="headerlink" href="#43-safe-schema-evolution--preserving-user-configurations" title="Permanent link">&para;</a></h4>
+<p>When introducing new fields or database schema changes to <code>Metric</code> or <code>MetricCollection</code>:
+1. <strong>Always Provide Defaults or Allow Nulls</strong>:
+   - New boolean fields: <code>default=False</code> or <code>default=True</code> with <code>db_index=True</code> if queried frequently.
+   - New relational fields: <code>null=True, blank=True, on_delete=models.SET_NULL</code>.
+   - New JSON/Array fields: <code>default=dict</code> or <code>default=list</code> with <code>blank=True</code>.
+2. <strong>Never Rename Columns in a Single Destructive Step</strong>:
+   Renaming a database column directly causes immediate downtime for active scrapers during rolling NetBox container upgrades. Use multi-phase field deprecation.</p>
+<h4 id="44-multi-phase-field-deprecation--data-migrations">4.4 Multi-Phase Field Deprecation &amp; Data Migrations<a class="headerlink" href="#44-multi-phase-field-deprecation--data-migrations" title="Permanent link">&para;</a></h4>
+<p>When removing or transforming database fields:
+- <strong>Phase 1 (Release N)</strong>: Add the new column with <code>null=True</code>. Update models and collectors to read from the new field if populated, falling back to the legacy field.
+- <strong>Phase 2 (Release N)</strong>: Include a Python data migration (<code>RunPython</code>) that iterates over existing records and copies data from the legacy field to the new field:
+  <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">forward_copy_data</span><span class="p">(</span><span class="n">apps</span><span class="p">,</span> <span class="n">schema_editor</span><span class="p">):</span>
+    <span class="n">Metric</span> <span class="o">=</span> <span class="n">apps</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s1">'netbox_more_metrics'</span><span class="p">,</span> <span class="s1">'Metric'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">Metric</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">legacy_field</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">metric</span><span class="o">.</span><span class="n">new_field</span><span class="p">:</span>
+            <span class="n">metric</span><span class="o">.</span><span class="n">new_field</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">legacy_field</span><span class="p">)</span>
+            <span class="n">metric</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">update_fields</span><span class="o">=</span><span class="p">[</span><span class="s1">'new_field'</span><span class="p">])</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Migration</span><span class="p">(</span><span class="n">migrations</span><span class="o">.</span><span class="n">Migration</span><span class="p">):</span>
+    <span class="n">operations</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">migrations</span><span class="o">.</span><span class="n">RunPython</span><span class="p">(</span><span class="n">forward_copy_data</span><span class="p">,</span> <span class="n">reverse_code</span><span class="o">=</span><span class="n">migrations</span><span class="o">.</span><span class="n">RunPython</span><span class="o">.</span><span class="n">noop</span><span class="p">),</span>
+    <span class="p">]</span>
+</code></pre></div>
+- <strong>Phase 3 (Release N+1)</strong>: Emit deprecation warnings in UI forms and API serializers if the legacy field is supplied.
+- <strong>Phase 4 (Release N+2 or Major Bump)</strong>: Remove the legacy field from models and generate the final schema drop migration.</p>
+<h4 id="45-migration-reversibility-testing--postgresql-specifics">4.5 Migration Reversibility Testing &amp; PostgreSQL Specifics<a class="headerlink" href="#45-migration-reversibility-testing--postgresql-specifics" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Reversibility Testing</strong>: Maintainers must verify that all schema migrations can be unapplied cleanly without data loss or integrity violations:
+  <div class="highlight"><pre><span></span><code><span class="c1"># Step backwards one migration</span>
+docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span>migrate<span class="w"> </span>netbox_more_metrics<span class="w"> </span><span class="m">0007</span>
+<span class="c1"># Re-apply forward</span>
+docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span>migrate<span class="w"> </span>netbox_more_metrics
+</code></pre></div></li>
+<li><strong>PostgreSQL Concurrency Considerations</strong>:</li>
+<li>Adding non-null columns without defaults in PostgreSQL locks the entire table.</li>
+<li>Adding indexes on large tables in production should use <code>ConcurrentAddIndex</code> if supported, or keep index footprint minimal.</li>
+</ul>
+<hr />
+<h3 id="5-dynamic-collector-compatibility--prometheus-exposition-stability">5. Dynamic Collector Compatibility &amp; Prometheus Exposition Stability<a class="headerlink" href="#5-dynamic-collector-compatibility--prometheus-exposition-stability" title="Permanent link">&para;</a></h3>
+<h4 id="51-dynamic-collector-architecture-overview--scrape-flow">5.1 Dynamic Collector Architecture Overview &amp; Scrape Flow<a class="headerlink" href="#51-dynamic-collector-architecture-overview--scrape-flow" title="Permanent link">&para;</a></h4>
+<p>The plugin operates an in-memory dynamic collector architecture:
+1. An incoming HTTP request hits <code>/plugins/more-metrics/export/</code> or a specific collection/metric endpoint.
+2. The view authenticates the request or verifies <code>export_metrics_without_auth == True</code>.
+3. <code>DynamicMetricCollectionCollector</code> instantiates or retrieves the collection's active metrics.
+4. Each metric is evaluated by <code>DynamicMetricCollector</code>, which translates model selections, filters, exclusions, and relational lookups into an optimized Django ORM QuerySet.
+5. The QuerySet executes against PostgreSQL, extracting counts, values, or utilization percentages.
+6. The collector constructs Prometheus metric families (<code>GaugeMetricFamily</code>, <code>CounterMetricFamily</code>, <code>InfoMetricFamily</code>) and serializes them to exposition format.</p>
+<h4 id="52-upstream-model--method-changes">5.2 Upstream Model &amp; Method Changes<a class="headerlink" href="#52-upstream-model--method-changes" title="Permanent link">&para;</a></h4>
+<p>Dynamic collectors frequently evaluate model methods (e.g., <code>get_utilization</code>, <code>get_power_utilization</code>):
+- <strong>Defensive Evaluation</strong>: NetBox model methods may change signatures, return <code>None</code>, or be deprecated. The evaluation loop in <code>netbox_more_metrics/collectors.py</code> must guard method invocations defensively:
+  <div class="highlight"><pre><span></span><code><span class="k">try</span><span class="p">:</span>
+    <span class="n">raw_val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_value</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">raw_val</span><span class="p">()</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">raw_val</span><span class="p">)</span> <span class="k">else</span> <span class="n">raw_val</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">continue</span>
+<span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Failed evaluating metric value '</span><span class="si">%s</span><span class="s2">' on </span><span class="si">%r</span><span class="s2">: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_value</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+    <span class="k">continue</span>
+</code></pre></div>
+- <strong>ORM Traversal Hardening</strong>: Relational paths (<code>device__rack__site__name</code>) must be validated against <code>validate_field_path()</code> to ensure that intermediate models cannot traverse into sensitive objects (<code>User</code>, <code>Token</code>, <code>Session</code>).</p>
+<h4 id="53-fail-soft-error-isolation">5.3 Fail-Soft Error Isolation<a class="headerlink" href="#53-fail-soft-error-isolation" title="Permanent link">&para;</a></h4>
+<p>Under no circumstances should an error in one metric abort the scrape of all other metrics. If an admin configures an invalid filter or an upstream NetBox model alters an attribute:
+1. Catch exceptions within <code>DynamicMetricCollector.collect()</code>.
+2. Emit a structured log message (<code>logger.error("Error collecting metric %s (pk=%d): %s", self.metric_name, self.pk, exc, exc_info=True)</code>).
+3. Do not re-raise the exception to the top-level view.
+4. Allow all remaining metrics in the collection to complete and yield valid Prometheus metrics.
+5. This guarantees that Prometheus scrapers receive HTTP 200 with all healthy metrics, preventing scrape alert storms across production network monitoring infrastructure.</p>
+<h4 id="54-relational-label-sanitization--postgresql-json-extraction">5.4 Relational Label Sanitization &amp; PostgreSQL JSON Extraction<a class="headerlink" href="#54-relational-label-sanitization--postgresql-json-extraction" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Label Sanitization (<code>get_annotation_alias</code>)</strong>: Django ORM forbids double underscores in annotation aliases (e.g., <code>device__site__name</code> is invalid as an alias). The plugin transforms relational label paths into safe PostgreSQL aliases (<code>_metric_label_device_site_name</code>) with collision-resistant SHA-256 truncation.</li>
+<li><strong>PostgreSQL JSONB Custom Fields</strong>: NetBox custom fields are stored in <code>custom_field_data</code> JSONB columns. Dynamic collectors use <code>jsonb_extract_path_text</code> to extract values directly in the database engine, avoiding costly Python deserialization loops. Maintain compatibility with PostgreSQL JSONB query semantics across PostgreSQL 14, 15, and 16.</li>
+</ul>
+<h4 id="55-prometheus-client-library-lifecycle">5.5 Prometheus Client Library Lifecycle<a class="headerlink" href="#55-prometheus-client-library-lifecycle" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Registry Suffix Collision Prevention</strong>:
+  <code>prometheus_client</code> automatically strips <code>_total</code> from Counters and <code>_info</code> from Info metrics in its internal name map (<code>_names_to_collectors</code>). Previous plugin versions crashed when querying <code>self.registry._names_to_collectors</code> because checking <code>metric.metric_name</code> resulted in false-negative existence checks, triggering duplicate registration errors.</li>
+<li><strong>Explicit Collector Tracking</strong>: The plugin explicitly manages active collectors via an internal dictionary keyed by primary key:
+  <div class="highlight"><pre><span></span><code><span class="bp">self</span><span class="o">.</span><span class="n">_active_metric_collectors</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">DynamicMetricCollector</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</code></pre></div>
+  This eliminates duplicate collector registration crashes regardless of suffix naming (<code>_total</code>, <code>_info</code>, <code>_count</code>, <code>_bucket</code>).</li>
+<li><strong>OpenMetrics Compliance</strong>: Ensure exposition conforms to Prometheus text format 0.0.4 and OpenMetrics 1.0 specifications.</li>
+</ul>
+<hr />
+<h3 id="6-zero-cost-github-actions-cicd-maintenance-strategy">6. Zero-Cost GitHub Actions CI/CD Maintenance Strategy<a class="headerlink" href="#6-zero-cost-github-actions-cicd-maintenance-strategy" title="Permanent link">&para;</a></h3>
+<h4 id="61-github-hosted-runner-economics">6.1 GitHub-Hosted Runner Economics<a class="headerlink" href="#61-github-hosted-runner-economics" title="Permanent link">&para;</a></h4>
+<p>Public open-source repositories on GitHub receive <strong>unlimited free runner minutes</strong> on standard GitHub-hosted runners (<code>ubuntu-latest</code>). Private repositories receive 2,000 free minutes per month.</p>
+<p>To ensure long-term maintenance costs remain <strong>$0.00</strong>:
+- <strong>Concurrency Auto-Cancellation</strong>: Every workflow includes a concurrency group with <code>cancel-in-progress: true</code>:
+  <div class="highlight"><pre><span></span><code><span class="nt">concurrency</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.workflow }}-${{ github.ref }}</span>
+<span class="w">  </span><span class="nt">cancel-in-progress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+  When a developer pushes multiple commits in quick succession, previous in-flight runs are immediately terminated, preserving runner capacity.
+- <strong>Aggressive Timeouts</strong>: All jobs specify <code>timeout-minutes: 10</code> (or <code>15</code> for matrix tests) to ensure hung processes or stalled container pulls cannot consume hours of runner time.
+- <strong>Execution Efficiency</strong>: With Docker Compose and caching, a full test run of 231 tests completes in under 20 seconds. Total pipeline wall-clock time across the 4-version NetBox matrix is under 2.5 minutes.</p>
+<h4 id="62-native-service-container-architecture">6.2 Native Service Container Architecture<a class="headerlink" href="#62-native-service-container-architecture" title="Permanent link">&para;</a></h4>
+<p>The CI architecture leverages Docker Compose running directly on the <code>ubuntu-latest</code> host. This guarantees:
+1. Complete parity with local development environments (<code>compose.yaml</code>).
+2. Immediate availability of official pre-built <code>netboxcommunity/netbox</code> images without requiring developers to clone NetBox core and compile 50+ Python dependencies from scratch.
+3. Isolated database and caching services using official alpine containers (<code>postgres:18-alpine</code>, <code>redis:8-alpine</code>).</p>
+<h4 id="63-aggressive-multi-tier-caching">6.3 Aggressive Multi-Tier Caching<a class="headerlink" href="#63-aggressive-multi-tier-caching" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Docker Layer Caching</strong>: GitHub Actions runner SSDs cache container layers and intermediate build stages.</li>
+<li><strong>Python Package Caching</strong>: The fast <code>packaging-and-quality</code> job uses <code>actions/setup-python@v5</code> with <code>cache: "pip"</code> to cache wheel downloads for Poetry and dependencies.</li>
+</ul>
+<h4 id="64-matrix-execution-optimization">6.4 Matrix Execution Optimization<a class="headerlink" href="#64-matrix-execution-optimization" title="Permanent link">&para;</a></h4>
+<p>The CI matrix covers all active NetBox 4.x minor releases:
+<div class="highlight"><pre><span></span><code><span class="nt">matrix</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">netbox-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"v4.0"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"v4.1"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"v4.2"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"v4.5"</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+All matrix cells execute in parallel on separate free runners, finishing the entire validation suite in parallel within 3 minutes.</p>
+<h4 id="65-canary-cron--automated-issue-generation">6.5 Canary Cron &amp; Automated Issue Generation<a class="headerlink" href="#65-canary-cron--automated-issue-generation" title="Permanent link">&para;</a></h4>
+<p>The weekly canary cron (<code>schedule: - cron: '0 6 * * 1'</code>) acts as an early-warning radar. If upstream NetBox pushes an update that breaks the plugin, maintainers are notified immediately via GitHub issues and workflow failure notifications before any end-users are impacted.</p>
+<hr />
+<h3 id="7-step-by-step-minor-upgrade-procedure-netbox-4x--4y">7. Step-by-Step Minor Upgrade Procedure (NetBox 4.x &rarr; 4.y)<a class="headerlink" href="#7-step-by-step-minor-upgrade-procedure-netbox-4x--4y" title="Permanent link">&para;</a></h3>
+<p>When upstream NetBox publishes a new minor version (for example, upgrading from <code>4.2</code> to <code>4.3</code>), follow this systematic 5-phase procedure:</p>
+<div class="highlight"><pre><span></span><code>[Phase 1: Upstream Reconnaissance]
+  ├── Read Upstream Release Notes &amp; Breaking Changes
+  └── Identify Model &amp; API Changes in core, dcim, ipam
+          │
+          ▼
+[Phase 2: Local Docker Development &amp; Test Execution]
+  ├── Update NETBOX_VER in development/dev.env or Dockerfile
+  ├── Run docker compose run --rm netbox ./manage.py makemigrations --check
+  └── Run docker compose run --rm netbox ./manage.py test netbox_more_metrics --keepdb
+          │
+          ▼
+[Phase 3: Migration Dependency Audit]
+  ├── If new migrations generated, check dependencies list
+  └── Pin upstream dependencies to lowest viable migration (e.g. core.0008)
+          │
+          ▼
+[Phase 4: CI Matrix &amp; Configuration Update]
+  ├── Add new minor version (v4.y) to .github/workflows/ci.yml matrix
+  └── Verify 100% green build on GitHub Actions
+          │
+          ▼
+[Phase 5: Version Bump, Changelog &amp; Release]
+  ├── Bump version in pyproject.toml and netbox_more_metrics/__init__.py
+  ├── Update docs/changelog.md
+  └── Tag release (e.g. v0.4.2) and push
+</code></pre></div>
+<h4 id="phase-1-pre-upgrade-upstream-reconnaissance">Phase 1: Pre-Upgrade Upstream Reconnaissance<a class="headerlink" href="#phase-1-pre-upgrade-upstream-reconnaissance" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Read the upstream NetBox release notes for <code>v4.y.0</code>.</li>
+<li>Inspect the "Breaking Changes" and "Deprecations" sections.</li>
+<li>Check if any core models used in metric filters (e.g., <code>Device</code>, <code>Site</code>, <code>Prefix</code>, <code>VirtualMachine</code>) have renamed fields or altered relational foreign keys.</li>
+</ol>
+<h4 id="phase-2-local-docker-development--test-execution">Phase 2: Local Docker Development &amp; Test Execution<a class="headerlink" href="#phase-2-local-docker-development--test-execution" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Update <code>NETBOX_VER</code> to test against the new version:
+   <div class="highlight"><pre><span></span><code><span class="nv">NETBOX_VER</span><span class="o">=</span>v4.y<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>build<span class="w"> </span>netbox
+</code></pre></div></li>
+<li>Start test dependencies and verify migration status:
+   <div class="highlight"><pre><span></span><code><span class="nv">NETBOX_VER</span><span class="o">=</span>v4.y<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span>makemigrations<span class="w"> </span>--check
+</code></pre></div></li>
+<li>Execute the full automated test suite:
+   <div class="highlight"><pre><span></span><code><span class="nv">NETBOX_VER</span><span class="o">=</span>v4.y<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>netbox_more_metrics<span class="w"> </span>--keepdb
+</code></pre></div></li>
+<li>If any tests fail, address the specific API changes following minimal-change and backward-compatible principles.</li>
+</ol>
+<h4 id="phase-3-migration-dependency-audit--makemigrations-verification">Phase 3: Migration Dependency Audit &amp; <code>makemigrations</code> Verification<a class="headerlink" href="#phase-3-migration-dependency-audit--makemigrations-verification" title="Permanent link">&para;</a></h4>
+<ol>
+<li>If any new migrations were created during the update:
+   <div class="highlight"><pre><span></span><code>ls<span class="w"> </span>-la<span class="w"> </span>netbox_more_metrics/migrations/
+</code></pre></div></li>
+<li>Inspect the latest migration file.</li>
+<li>Verify that any dependency on <code>core</code> is pinned to the earliest viable migration (<code>core.0008_contenttype_proxy</code> or <code>core.0010_gfk_indexes</code>) rather than the leaf migration of <code>v4.y</code>.</li>
+<li>Re-run <code>makemigrations --check</code> to ensure no lingering schema drifts.</li>
+</ol>
+<h4 id="phase-4-ci-matrix-update--verification">Phase 4: CI Matrix Update &amp; Verification<a class="headerlink" href="#phase-4-ci-matrix-update--verification" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Open <code>.github/workflows/ci.yml</code>.</li>
+<li>Add <code>v4.y</code> to the <code>test</code> job matrix:
+   <div class="highlight"><pre><span></span><code><span class="nt">matrix</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">netbox-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"v4.0"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"v4.1"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"v4.2"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"v4.5"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"v4.y"</span><span class="p p-Indicator">]</span>
+</code></pre></div></li>
+<li>Commit to the working branch and push to trigger CI.</li>
+<li>Verify that all packaging and test matrix cells pass with 100% success.</li>
+</ol>
+<h4 id="phase-5-version-bump-changelog-and-release-tagging">Phase 5: Version Bump, Changelog, and Release Tagging<a class="headerlink" href="#phase-5-version-bump-changelog-and-release-tagging" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Update version number in <code>pyproject.toml</code> and <code>netbox_more_metrics/__init__.py</code>.</li>
+<li>Add release highlights to <code>docs/changelog.md</code>.</li>
+<li>Create and push a signed Git tag:
+   <div class="highlight"><pre><span></span><code>git<span class="w"> </span>tag<span class="w"> </span>-s<span class="w"> </span>v0.4.2<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release v0.4.2: NetBox 4.y compatibility"</span>
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v0.4.2
+</code></pre></div></li>
+</ol>
+<hr />
+<h3 id="8-step-by-step-major-upgrade-playbook-netbox-4x--5x">8. Step-by-Step Major Upgrade Playbook (NetBox 4.x &rarr; 5.x)<a class="headerlink" href="#8-step-by-step-major-upgrade-playbook-netbox-4x--5x" title="Permanent link">&para;</a></h3>
+<p>Major upgrades introduce fundamental architectural shifts (such as Python version deprecations, Django major upgrades, or plugin API restructuring).</p>
+<h4 id="phase-1-breaking-changes--deprecation-removal-audit">Phase 1: Breaking Changes &amp; Deprecation Removal Audit<a class="headerlink" href="#phase-1-breaking-changes--deprecation-removal-audit" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Audit all deprecations removed in NetBox 5.0.</li>
+<li>Check whether Django has removed previously deprecated queryset methods or template tags.</li>
+<li>Identify whether NetBox 5.0 has introduced a new plugin base class, navigation menu system, or authentication pipeline.</li>
+</ol>
+<h4 id="phase-2-platform-version-bumps-python-django-poetry-dependencies">Phase 2: Platform Version Bumps (Python, Django, Poetry dependencies)<a class="headerlink" href="#phase-2-platform-version-bumps-python-django-poetry-dependencies" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Verify minimum Python runtime. If NetBox 5.0 drops Python 3.10 and requires Python 3.12+, update <code>pyproject.toml</code>:
+   <div class="highlight"><pre><span></span><code><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.12"</span>
+</code></pre></div></li>
+<li>Update Poetry lockfile:
+   <div class="highlight"><pre><span></span><code>poetry<span class="w"> </span>update
+</code></pre></div></li>
+</ol>
+<h4 id="phase-3-core-framework-shims--model-traversal-adaptations">Phase 3: Core Framework Shims &amp; Model Traversal Adaptations<a class="headerlink" href="#phase-3-core-framework-shims--model-traversal-adaptations" title="Permanent link">&para;</a></h4>
+<ol>
+<li>If NetBox 5.0 introduces breaking changes to <code>NetBoxModel</code> or <code>NetBoxModelFilterSet</code>, create backward-compatible adapter shims:
+   <div class="highlight"><pre><span></span><code><span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">netbox.filtersets</span><span class="w"> </span><span class="kn">import</span> <span class="n">NetBoxModelFilterSet</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c1"># Fallback or shim for evolving framework classes</span>
+    <span class="o">...</span>
+</code></pre></div></li>
+<li>Verify that <code>validate_field_path()</code> continues to correctly resolve fields across modified models.</li>
+</ol>
+<h4 id="phase-4-migration-path--data-transformation">Phase 4: Migration Path &amp; Data Transformation<a class="headerlink" href="#phase-4-migration-path--data-transformation" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Ensure the migration path from 4.x to 5.x is linear and non-destructive.</li>
+<li>If major schema refactoring is required, generate squashed migrations for old releases or maintain a clean transition migration.</li>
+<li>Test migration rollback and re-application against live PostgreSQL test databases.</li>
+</ol>
+<h4 id="phase-5-pluginconfig-boundary-update--e2e-validation">Phase 5: PluginConfig Boundary Update &amp; E2E Validation<a class="headerlink" href="#phase-5-pluginconfig-boundary-update--e2e-validation" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Update <code>NetBoxMoreMetricsConfig</code> in <code>netbox_more_metrics/__init__.py</code>:
+   <div class="highlight"><pre><span></span><code><span class="n">min_version</span> <span class="o">=</span> <span class="s2">"4.0.0"</span>
+<span class="n">max_version</span> <span class="o">=</span> <span class="s2">"5.99.9"</span>
+</code></pre></div></li>
+<li>Update <code>.github/workflows/ci.yml</code> matrix to include NetBox 5.0 images.</li>
+<li>Run complete adversarial stress testing across all metrics collectors and export endpoints.</li>
+</ol>
+<hr />
+<h3 id="9-troubleshooting-rollback-and-emergency-response-runbook">9. Troubleshooting, Rollback, and Emergency Response Runbook<a class="headerlink" href="#9-troubleshooting-rollback-and-emergency-response-runbook" title="Permanent link">&para;</a></h3>
+<h4 id="91-scrape-500-internal-server-errors--scrape-timeout-remediation">9.1 Scrape 500 Internal Server Errors &amp; Scrape Timeout Remediation<a class="headerlink" href="#91-scrape-500-internal-server-errors--scrape-timeout-remediation" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Symptom</strong>: Prometheus server alerts with <code>ScrapeFailed</code> or HTTP 500 status when scraping <code>/plugins/more-metrics/export/</code>.</li>
+<li><strong>Diagnosis</strong>:</li>
+<li>Inspect the NetBox container logs:
+     <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>--tail<span class="o">=</span><span class="m">100</span><span class="w"> </span>netbox
+</code></pre></div></li>
+<li>Identify the specific metric causing the failure:<ul>
+<li>Scrape metrics individually via the single-metric endpoint:
+   <code>http://netbox:8000/api/plugins/more-metrics/metrics/&lt;pk&gt;/metrics/</code></li>
+<li>Iterate across all configured metrics to pinpoint the failing primary key.</li>
+</ul>
+</li>
+<li><strong>Immediate Mitigation</strong>:</li>
+<li>Log in to the NetBox admin UI (<code>/plugins/more-metrics/metrics/</code>).</li>
+<li>Locate the failing metric record and toggle <code>enabled = False</code>.</li>
+<li>Scrapes will immediately recover.</li>
+<li><strong>Root-Cause Fix</strong>:
+  If the failure was caused by an upstream model change (e.g., a field was renamed or a method return type changed), update <code>collectors.py</code> with defensive try/except containment and deploy a patch release.</li>
+</ul>
+<h4 id="92-migration-conflict--nodenotfounderror-invalidation--resolution">9.2 Migration Conflict / <code>NodeNotFoundError</code> Invalidation &amp; Resolution<a class="headerlink" href="#92-migration-conflict--nodenotfounderror-invalidation--resolution" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Symptom</strong>: During <code>manage.py migrate</code>, NetBox crashes with:
+  <code>NodeNotFoundError: Migration netbox_more_metrics.000X dependencies reference nonexistent parent node ('core', '...')</code>.</li>
+<li><strong>Diagnosis</strong>:
+  A plugin migration file was generated in an environment running a newer NetBox version, capturing a leaf migration that does not exist in the user's NetBox installation.</li>
+<li><strong>Remediation</strong>:</li>
+<li>Open the offending migration file in <code>netbox_more_metrics/migrations/</code>.</li>
+<li>Locate the invalid dependency (e.g., <code>('core', '0021_job_queue_name')</code>).</li>
+<li>Replace it with the base dependency present in all 4.x versions: <code>('core', '0008_contenttype_proxy')</code>.</li>
+<li>Save and re-run:
+     <div class="highlight"><pre><span></span><code>python<span class="w"> </span>manage.py<span class="w"> </span>migrate<span class="w"> </span>netbox_more_metrics
+</code></pre></div></li>
+</ul>
+<h4 id="93-registry-collision--duplicate-timeseries-triage">9.3 Registry Collision &amp; Duplicate Timeseries Triage<a class="headerlink" href="#93-registry-collision--duplicate-timeseries-triage" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Symptom</strong>: Scrape endpoint returns Prometheus formatting error:
+  <code>Duplicated timeseries in CollectorRegistry: ...</code>.</li>
+<li><strong>Diagnosis</strong>:
+  Two separate metrics within the same collection share the same <code>metric_name</code> and produce identical label sets, or a utilization metric was queried without unique identifying labels.</li>
+<li><strong>Remediation</strong>:</li>
+<li>The plugin automatically deduplicates utilization samples in <code>DynamicMetricCollector._collect_utilization()</code>.</li>
+<li>If custom user labels collide, adjust the <code>metric_labels</code> configuration to include distinguishing attributes (e.g., <code>id</code>, <code>name</code>, or <code>slug</code>).</li>
+</ul>
+<h4 id="94-emergency-patching--rollback-workflow">9.4 Emergency Patching &amp; Rollback Workflow<a class="headerlink" href="#94-emergency-patching--rollback-workflow" title="Permanent link">&para;</a></h4>
+<p>If a critical defect is identified in a published release:
+1. <strong>Branch from Release Tag</strong>:
+   <div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>hotfix/v0.4.2<span class="w"> </span>v0.4.1
+</code></pre></div>
+2. <strong>Apply Minimal Fix</strong>: Follow the minimal-change principle. Fix only the defect.
+3. <strong>Run Regression Tests</strong>:
+   <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>netbox_more_metrics<span class="w"> </span>--keepdb
+</code></pre></div>
+4. <strong>Publish Hotfix</strong>:
+   Tag and publish <code>v0.4.2</code> immediately.
+5. <strong>Merge Back to Development</strong>:
+   Merge <code>hotfix/v0.4.2</code> into <code>development</code>.</p>
+<hr />
+<h3 id="appendix-a-diagnostic-commands-quick-reference">Appendix A: Diagnostic Commands Quick Reference<a class="headerlink" href="#appendix-a-diagnostic-commands-quick-reference" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Executable Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Validate Packaging</strong></td>
+<td><code>poetry check</code></td>
+</tr>
+<tr>
+<td><strong>Build Artifacts</strong></td>
+<td><code>poetry build</code></td>
+</tr>
+<tr>
+<td><strong>Check Migrations</strong></td>
+<td><code>docker compose run --rm netbox ./manage.py makemigrations --check</code></td>
+</tr>
+<tr>
+<td><strong>Run All Tests</strong></td>
+<td><code>docker compose run --rm netbox ./manage.py test netbox_more_metrics --keepdb</code></td>
+</tr>
+<tr>
+<td><strong>Run Specific Test</strong></td>
+<td><code>docker compose run --rm netbox ./manage.py test netbox_more_metrics.tests.test_collectors --keepdb</code></td>
+</tr>
+<tr>
+<td><strong>Test With Warnings</strong></td>
+<td><code>docker compose run --rm netbox python -W error::DeprecationWarning ./manage.py test netbox_more_metrics --keepdb</code></td>
+</tr>
+<tr>
+<td><strong>Inspect DB Migrations</strong></td>
+<td><code>docker compose run --rm netbox ./manage.py showmigrations</code></td>
+</tr>
+<tr>
+<td><strong>Rollback Migration</strong></td>
+<td><code>docker compose run --rm netbox ./manage.py migrate netbox_more_metrics 0007</code></td>
+</tr>
+<tr>
+<td><strong>Re-apply Migrations</strong></td>
+<td><code>docker compose run --rm netbox ./manage.py migrate netbox_more_metrics</code></td>
+</tr>
+<tr>
+<td><strong>Validate Workflow YAML</strong></td>
+<td><code>python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))"</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="appendix-b-migration-dependency-inspection-cheat-sheet">Appendix B: Migration Dependency Inspection Cheat Sheet<a class="headerlink" href="#appendix-b-migration-dependency-inspection-cheat-sheet" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>NetBox Core App Migration Flow:
+core.0001_squashed_0005
+     │
+     ▼
+core.0008_contenttype_proxy   &lt;--- PIN HERE for core.ObjectType dependencies!
+     │                             (Guaranteed to exist across ALL NetBox 4.x)
+     ▼
+core.0010_gfk_indexes
+     │
+     ▼
+core.0018_concrete_objecttype
+     │
+     ▼
+core.0021_job_queue_name      &lt;--- DO NOT PIN HERE!
+                                   (Only exists in NetBox 4.5+; breaks 4.0-4.4)
+</code></pre></div>
+<p><strong>Rule of Thumb</strong>: When referencing any NetBox core model in plugin migrations, never rely on auto-generated leaf migrations. Always pin to the earliest migration that introduced the model definition.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/TheDJVG/netbox-more-metrics" target="_blank" rel="noopener" title="Github" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="mailto:me+netbox@dj.vg" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.indexes", "navigation.instant", "navigation.tabs.sticky"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

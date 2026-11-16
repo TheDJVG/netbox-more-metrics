@@ -12,14 +12,14 @@
       
       
       
-        <link rel="next" href="changelog/">
+        <link rel="next" href="netbox_upgrade_strategy/">
       
       
         
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
@@ -382,10 +382,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#filter-validation" class="md-nav__link">
+  <a href="#filter--security-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filter validation
+        Filter &amp; security validation
       
     </span>
   </a>
@@ -408,23 +408,29 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
+          <li class="md-nav__item">
+  <a href="#endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Functions
+        Endpoints
       
     </span>
   </a>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#development--testing" class="md-nav__link">
+    <span class="md-ellipsis">
       
-        <li class="md-nav__item">
+        Development &amp; Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#future-ideas" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -434,15 +440,9 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#missing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Missing
-      
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -450,6 +450,33 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="netbox_upgrade_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrade Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -602,10 +629,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#filter-validation" class="md-nav__link">
+  <a href="#filter--security-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filter validation
+        Filter &amp; security validation
       
     </span>
   </a>
@@ -628,23 +655,29 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
+          <li class="md-nav__item">
+  <a href="#endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Functions
+        Endpoints
       
     </span>
   </a>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#development--testing" class="md-nav__link">
+    <span class="md-ellipsis">
       
-        <li class="md-nav__item">
+        Development &amp; Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#future-ideas" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -654,15 +687,9 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#missing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Missing
-      
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -705,7 +732,7 @@
 </tr>
 <tr>
 <td>4.0 &lt;= 4.5</td>
-<td>0.3.X, 0.4.X</td>
+<td>0.3.X, 0.4.X, 0.5.X</td>
 </tr>
 </tbody>
 </table>
@@ -729,44 +756,59 @@
 <p>Enable the plugin in <code>/opt/netbox/netbox/netbox/configuration.py</code>,
 or if you use netbox-docker, your <code>/configuration/plugins.py</code> file :</p>
 <div class="highlight"><pre><span></span><code><span class="n">PLUGINS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;netbox_more_metrics&#39;</span>
+    <span class="s1">'netbox_more_metrics'</span>
 <span class="p">]</span>
 </code></pre></div>
 <p>If you want to export the configured metrics without authentication set the plugin config <code>export_metrics_without_auth</code> to <code>True</code>.
 By default, normal NetBox view permissions apply.
 <div class="highlight"><pre><span></span><code><span class="n">PLUGINS_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;netbox_more_metrics&#39;</span> <span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;export_metrics_without_auth&#39;</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="s1">'netbox_more_metrics'</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'export_metrics_without_auth'</span><span class="p">:</span> <span class="kc">True</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></p>
 <h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h3>
 <h4 id="custom-metrics">Custom metrics<a class="headerlink" href="#custom-metrics" title="Permanent link">&para;</a></h4>
-<p>For example, you could track the amount of active devices over time by rack and site
+<p>For example, you could track the amount of active devices over time by rack and site:
 <img alt="Example metric" src="img/example1.png" /></p>
-<p>Any model can be exported, data is grouped by the labels.</p>
-<h4 id="filter-validation">Filter validation<a class="headerlink" href="#filter-validation" title="Permanent link">&para;</a></h4>
-<p>Every filter is tested on save and also when the metric is initiated for exporting.
-<img alt="Example invalid filter" src="img/example2.png" /></p>
-<h4 id="heavy-lifting-is-done-by-the-database">Heavy lifting is done by the database<a class="headerlink" href="#heavy-lifting-is-done-by-the-database" title="Permanent link">&para;</a></h4>
-<p>As much as possible is done in the database directly to take advantage of any Model specific optimizations.</p>
-<p><code>null</code> database values are converted to a string <code>"null"</code>.</p>
-<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Metrics can be included in the global metric endpoint (<code>/metrics</code>).</li>
-<li>Metrics and MetricCollections can be individually exported (as long as the Metric(Collection) is enabled)</li>
+<li>Export <strong>Gauge</strong>, <strong>Counter</strong>, and <strong>Info</strong> Prometheus metrics from NetBox models (DCIM, IPAM, Circuits, Virtualization, Tenancy, etc.).</li>
+<li>Group data by one or more model fields (<code>metric_labels</code>), including relational fields (<code>site__slug</code>, <code>rack__name</code>) and custom fields (<code>custom_field_data__my_field</code>), and rename exported labels cleanly via <code>label_renames</code>.</li>
+<li>Export either aggregated object <strong>counts</strong> (<code>count</code>) or built-in <strong>utilization percentages</strong>:</li>
+<li><code>dcim.Rack</code>: Space utilization (<code>get_utilization</code>) and power utilization (<code>get_power_utilization</code>)</li>
+<li><code>ipam.Prefix</code>: IP utilization (<code>get_utilization</code>)</li>
+<li><code>ipam.Aggregate</code>: Prefix utilization (<code>get_utilization</code>)</li>
+<li>Filter and exclude source querysets with Django ORM JSON dictionaries (<code>filter</code> and <code>exclude</code>).</li>
+<li>Full NetBox 4.x integration including UI &amp; REST API <code>FilterSet</code>s, global search indexing, tags, custom fields, changelogs, and journals.</li>
 </ul>
-<h2 id="future-ideas">Future ideas<a class="headerlink" href="#future-ideas" title="Permanent link">&para;</a></h2>
+<h4 id="filter--security-validation">Filter &amp; security validation<a class="headerlink" href="#filter--security-validation" title="Permanent link">&para;</a></h4>
+<p>Every filter, exclude rule, and label path is validated on save and when collectors initialize:
+<img alt="Example invalid filter" src="img/example2.png" /></p>
+<p>Sensitive authentication/credential models (such as <code>users</code> and <code>auth</code>) and ReDoS-prone regex lookups are automatically blocked from metric queries and relation traversals.</p>
+<h4 id="heavy-lifting-is-done-by-the-database">Heavy lifting is done by the database<a class="headerlink" href="#heavy-lifting-is-done-by-the-database" title="Permanent link">&para;</a></h4>
+<p>As much as possible is aggregated directly in PostgreSQL to take advantage of model indexes and database optimizations. <code>NULL</code> database values are exported as the string <code>"null"</code>.</p>
+<h3 id="endpoints">Endpoints<a class="headerlink" href="#endpoints" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Adding a way to export utilization (e.g. how many IPs of a prefix are used, or how much power is still available on a
-  feed).</li>
+<li><strong>Global endpoint</strong>: Collections with <code>include_in_default=True</code> are automatically registered in NetBox's global <code>/metrics</code> endpoint (when <code>METRICS_ENABLED=True</code>).</li>
+<li><strong>Per-collection &amp; per-metric endpoints</strong>: Enabled <code>MetricCollection</code>s (<code>/plugins/more-metrics/collections/&lt;id&gt;/metrics/</code>) and <code>Metric</code>s (<code>/plugins/more-metrics/metrics/&lt;id&gt;/metrics/</code>) can be scraped individually.</li>
+</ul>
+<h3 id="development--testing">Development &amp; Testing<a class="headerlink" href="#development--testing" title="Permanent link">&para;</a></h3>
+<p>Start the local NetBox development environment with Docker Compose:</p>
+<div class="highlight"><pre><span></span><code>make<span class="w"> </span>start
+</code></pre></div>
+<p>Run the automated test suite inside the NetBox container:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>netbox_more_metrics
+</code></pre></div>
+<p>To build and test against a specific NetBox 4.x version (e.g. <code>v4.2</code> or <code>v4.5</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="nv">NETBOX_VER</span><span class="o">=</span>v4.5<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>build<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">NETBOX_VER</span><span class="o">=</span>v4.5<span class="w"> </span>netbox
+<span class="nv">NETBOX_VER</span><span class="o">=</span>v4.5<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>netbox<span class="w"> </span>./manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>netbox_more_metrics
+</code></pre></div>
+<p>See <a href="netbox_upgrade_strategy/">docs/netbox_upgrade_strategy.md</a> for details on CI matrix testing and maintaining compatibility with future NetBox releases.</p>
+<h3 id="future-ideas">Future ideas<a class="headerlink" href="#future-ideas" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Additional built-in utilization/capacity metrics (e.g. individual power feed capacity).</li>
 </ul>
 <p><strong>More ideas welcome!</strong></p>
-<h2 id="missing">Missing<a class="headerlink" href="#missing" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Tests</li>
-<li>Documentation</li>
-</ul>
 
 
 
@@ -840,7 +882,7 @@ By default, normal NetBox view permissions apply.
       <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.indexes", "navigation.instant", "navigation.tabs.sticky"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
