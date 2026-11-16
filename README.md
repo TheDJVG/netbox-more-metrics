@@ -64,35 +64,59 @@ PLUGINS_CONFIG = {
 
 ### Custom metrics
 
-For example, you could track the amount of active devices over time by rack and site
+For example, you could track the amount of active devices over time by rack and site:
 ![Example metric](docs/img/example1.png)
 
-Any model can be exported, data is grouped by the labels.
+- Export **Gauge**, **Counter**, and **Info** Prometheus metrics from NetBox models (DCIM, IPAM, Circuits, Virtualization, Tenancy, etc.).
+- Group data by one or more model fields (`metric_labels`), including relational fields (`site__slug`, `rack__name`) and custom fields (`custom_field_data__my_field`), and rename exported labels cleanly via `label_renames`.
+- Export either aggregated object **counts** (`count`) or built-in **utilization percentages**:
+  - `dcim.Rack`: Space utilization (`get_utilization`) and power utilization (`get_power_utilization`)
+  - `ipam.Prefix`: IP utilization (`get_utilization`)
+  - `ipam.Aggregate`: Prefix utilization (`get_utilization`)
+- Filter and exclude source querysets with Django ORM JSON dictionaries (`filter` and `exclude`).
+- Full NetBox 4.x integration including UI & REST API `FilterSet`s, global search indexing, tags, custom fields, changelogs, and journals.
 
-### Filter validation
+### Filter & security validation
 
-Every filter is tested on save and also when the metric is initiated for exporting.
+Every filter, exclude rule, and label path is validated on save and when collectors initialize:
 ![Example invalid filter](docs/img/example2.png)
+
+Sensitive authentication/credential models (such as `users` and `auth`) and ReDoS-prone regex lookups are automatically blocked from metric queries and relation traversals.
 
 ### Heavy lifting is done by the database
 
-As much as possible is done in the database directly to take advantage of any Model specific optimizations.
+As much as possible is aggregated directly in PostgreSQL to take advantage of model indexes and database optimizations. `NULL` database values are exported as the string `"null"`.
 
-`null` database values are converted to a string `"null"`.
+## Endpoints
 
-# Functions
+- **Global endpoint**: Collections with `include_in_default=True` are automatically registered in NetBox's global `/metrics` endpoint (when `METRICS_ENABLED=True`).
+- **Per-collection & per-metric endpoints**: Enabled `MetricCollection`s (`/plugins/more-metrics/collections/<id>/metrics/`) and `Metric`s (`/plugins/more-metrics/metrics/<id>/metrics/`) can be scraped individually.
 
-- Metrics can be included in the global metric endpoint (`/metrics`).
-- Metrics and MetricCollections can be individually exported (as long as the Metric(Collection) is enabled)
+## Development & Testing
 
-# Future ideas
+Start the local NetBox development environment with Docker Compose:
 
-- Adding a way to export utilization (e.g. how many IPs of a prefix are used, or how much power is still available on a
-  feed).
+```bash
+make start
+```
+
+Run the automated test suite inside the NetBox container:
+
+```bash
+docker compose run --rm netbox ./manage.py test netbox_more_metrics
+```
+
+To build and test against a specific NetBox 4.x version (e.g. `v4.2` or `v4.5`):
+
+```bash
+NETBOX_VER=v4.5 docker compose build --build-arg NETBOX_VER=v4.5 netbox
+NETBOX_VER=v4.5 docker compose run --rm netbox ./manage.py test netbox_more_metrics
+```
+
+See [docs/netbox_upgrade_strategy.md](docs/netbox_upgrade_strategy.md) for details on CI matrix testing and maintaining compatibility with future NetBox releases.
+
+## Future ideas
+
+- Additional built-in utilization/capacity metrics (e.g. individual power feed capacity).
 
 **More ideas welcome!**
-
-# Missing
-
-- Tests
-- Documentation
